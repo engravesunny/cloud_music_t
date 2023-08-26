@@ -61,7 +61,7 @@ import About from './About.vue'
 import Login from './Login.vue'
 import { logout } from '../../../../../api/user';
 import { ElMessage } from 'element-plus'
-import { onMounted, reactive } from '@vue/runtime-core';
+import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 let userInfos = reactive({
     nickname:'',

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted } from 'vue'
 import { user } from '../../store/user'
 import { storeToRefs } from 'pinia'
 

@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, shallowRef } from "@vue/runtime-core";
+import { onMounted, reactive, shallowRef } from "vue";
 import { useRoute } from "vue-router";
 import { search } from '@/api/search'
 import singleSong from '@/components/singleSong/index.vue'

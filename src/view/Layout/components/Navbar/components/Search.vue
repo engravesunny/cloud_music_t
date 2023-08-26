@@ -37,10 +37,10 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref } from "vue";
 // 引入搜索api接口
 import { searchDefault, searchHot, searchSuggest, searchResult, search } from '@/api/search.js'
-import { onMounted } from "@vue/runtime-core";
+import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 const router = useRouter()
 const route = useRoute()

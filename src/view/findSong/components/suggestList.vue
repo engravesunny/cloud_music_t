@@ -6,7 +6,7 @@
         <div v-loading="!suggestLists.length" class="playlist_container">
             <ul>
                 <li @click="toSongList(item.id)" v-for="item in suggestLists" :key="item.id">
-                    <el-image loading="lazy" fit="cover" style="width: 100%;border-radius:10px;" :src="suggestLists.length<=20?item.picUrl:item.coverImgUrl" lazy />
+                    <el-image fit="cover" style="width: 100%;border-radius:10px;" :src="suggestLists.length<=20?item.picUrl:item.coverImgUrl"/>
                     <div class="name">{{item.name}}</div>
                 </li>
             </ul>
@@ -33,22 +33,23 @@ let toSongList = (id) => {
 .playlist_container{
     width: 100%;
     ul{
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
+        padding: 50px 50px 0 50px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto;
+        column-gap: 80px;
+        row-gap: 50px;
         width: 100%;
-        li{
-            margin: 10px;
-            width: 17%;
-            height: 20%;
+        justify-items: stretch;
+        li {
+            justify-self: center;
             display: flex;
             justify-content: center;
             flex-direction: column;
             cursor: pointer;
             transition: all 0.5s;
             .name{
-                width: 100%;
                 height: 40px;
                 padding: 3px;
                 overflow: hidden;
@@ -60,7 +61,7 @@ let toSongList = (id) => {
             }
         }
         li:hover{
-            width: 20%;
+            transform: scale(1.1);
         }
     }
 }
