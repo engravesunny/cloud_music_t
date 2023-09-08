@@ -1,5 +1,4 @@
 <template>
-
     <div class="top_menu unselectable">
         <!-- logo -->
         <div class="logo">
@@ -20,20 +19,24 @@
         <User></User>
         <!-- 用户区域 -->
 
+        <!-- 主题 -->
+        <Theme></Theme>
+        <!-- 主题 -->
+
         <!-- 窗口操作区域 -->
         <!-- 窗口操作区域 -->
 
     </div>
-
 </template>
 
 <script setup>
+import Theme from './components/Theme.vue'
 import Search from './components/Search.vue'
 import User from './components/User.vue'
 </script>
 
 <style lang="less" scoped>
-.top_menu{
+.top_menu {
     display: inline-block;
     box-sizing: border-box;
     position: fixed;
@@ -42,28 +45,31 @@ import User from './components/User.vue'
     width: 100%;
     min-width: 900px;
     height: 60px;
-    background: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1 );
     z-index: 999;
-    .logo{
+
+    .logo {
         display: flex;
         float: left;
         margin-left: 20px;
         height: 60px;
         background-color: rgba(0, 0, 0, 0);
-        .logo_container{
+
+        .logo_container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            .logo_icon{
+
+            .logo_icon {
                 height: 60px;
-                img{
+
+                img {
                     margin-top: -11px;
                     width: 80px;
                     height: 80px;
                 }
             }
-            .logo_title{
+
+            .logo_title {
                 font-size: 24px;
                 font-weight: 700;
             }

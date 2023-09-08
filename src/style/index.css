@@ -4,31 +4,48 @@
   -ms-user-select: none;
   user-select: none;
 }
+
 img {
   -webkit-user-drag: none;
 }
+
+* {
+  transition: all .5s;
+}
+
 body {
   min-width: 1032px;
+  background-color: var(--bg-color-global);
+  color: var(--font-color-global);
 }
+
 .shenglue {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 .shenglue2 {
   overflow: hidden;
   white-space: nowrap;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
 }
+
 .el-slider__button.el-tooltip__trigger.el-tooltip__trigger {
   width: 10px;
   height: 10px;
   border: 1px solid rgb(142, 128, 128);
 }
+
 .el-slider__bar {
-  background-color: rgb(0, 0, 0) !important;
+  background-color: var(--click-enable-color);
 }
+
 .volumContainer .el-slider__bar {
-  background-color: rgb(142, 128, 128) !important;
+  background-color: var(--click-enable-color) !important;
+}
+
+.el-collapse-item__header {
+  padding: 0 10px !important;
 }

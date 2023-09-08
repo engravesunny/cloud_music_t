@@ -1,0 +1,36 @@
+:root {
+    --bg-color-global: rgb(246, 243, 248);
+    --font-color-global: rgb(64, 43, 77);
+    --siderbar-hover-color: rgb(236, 233, 239);
+    --siderbar-active-color: rgb(228, 219, 239);
+    --siderbar-active-hover-color: rgb(226, 217, 237);
+    --siderbar-content-text-color: rgb(--font-color-global);
+    --song-hover-color: rgb(247, 240, 255);
+    --song-li-color: #fff;
+    --click-enable-color: rgb(159, 116, 231);
+    --inner-body-color: rgb(249, 247, 249);
+    --drag-box-color: rgb(240, 234, 247);
+}
+
+
+.el-collapse {
+    --el-collapse-border-color: var(--font-color-global);
+    --el-collapse-header-height: 48px;
+    --el-collapse-header-bg-color: transparent !important;
+    --el-collapse-header-text-color: var(--font-color-global) !important;
+    --el-collapse-header-font-size: 13px;
+    --el-collapse-content-bg-color: transparent !important;
+    --el-collapse-content-font-size: 16px !important;
+    --el-collapse-content-text-color: var(--font-color-global) !important;
+}
+
+--bg-color-global: rgb(40, 36, 44);
+--font-color-global: rgb(202, 183, 224);
+--siderbar-hover-color: rgb(49, 44, 55);
+--siderbar-active-color: rgb(68, 63, 77);
+--siderbar-active-hover-color: rgb(69, 63, 77);
+--siderbar-content-text-color: rgb(--font-color-global);
+--song-hover-color: rgb(37, 35, 43);
+--song-li-color: rgb(26, 24, 30);
+--click-enable-color: rgb(216, 196, 241);
+--inner-body-color: rgb(34, 31, 38);

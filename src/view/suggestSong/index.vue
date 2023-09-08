@@ -12,7 +12,8 @@
                 </div>
             </div>
             <div class="bottom">
-                <el-button @click="playAll(songList)" style="background:#F774C0" type="primary" round class="iconfont">&#xe87c; 播放全部</el-button>
+                <el-button @click="playAll(songList)" style="background:var(--click-enable-color)" type="primary" round
+                    class="iconfont">&#xe87c; 播放全部</el-button>
             </div>
         </div>
         &nbsp;
@@ -29,8 +30,8 @@ import { getDailySongs } from '@/api/myFavourite'
 const dateStr = new Date()
 const date = dateStr.getDate().toString().padStart(2, '0');
 let songList = reactive([])
-onMounted(async()=>{
-    const {data} = await getDailySongs()
+onMounted(async () => {
+    const { data } = await getDailySongs()
     data.data.dailySongs.forEach(item => {
         songList.push(item)
     });
@@ -39,47 +40,51 @@ onMounted(async()=>{
 </script>
 
 <style lang="less" scoped>
-.suggestSong_container{
+.suggestSong_container {
     width: 100%;
     height: 300px;
     // background-color: pink;
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    .top{
+
+    .top {
         display: flex;
         height: 200px;
         justify-content: flex-start;
         align-items: center;
-        .suggest_img{
+
+        .suggest_img {
             padding: 50px 20px 50px 50px;
             width: 100px;
             height: 100px;
             position: relative;
-            .img{
+
+            .img {
                 font-size: 100px;
-                color: #F774C0;
+                color: var(--click-enable-color);
             }
-            .date{
+
+            .date {
                 position: absolute;
                 top: 87px;
                 left: 76px;
                 font-size: 40px;
-                color: #F774C0;
+                color: var(--click-enable-color);
             }
         }
-        .suggest_title{
-            p{
+
+        .suggest_title {
+            p {
                 margin-top: 5px;
                 font-size: 14px;
                 font-weight: 100;
             }
         }
     }
-    .bottom{
+
+    .bottom {
         margin-left: 55px;
     }
 }
-
-
 </style>

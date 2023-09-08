@@ -1,41 +1,40 @@
 <template>
     <div class="main_body">
-            <!-- 顶部区域 -->
-                <!-- Navbar区域 -->
+        <!-- 顶部区域 -->
+        <!-- Navbar区域 -->
 
-                <Navbar></Navbar>
+        <Navbar></Navbar>
 
-                <!-- Navbar区域 -->
+        <!-- Navbar区域 -->
 
-            <!-- 顶部区域 -->
+        <!-- 顶部区域 -->
 
-            <!-- 主体区域 -->
+        <!-- 主体区域 -->
 
-                <div class="main">
-                        
-                    <!-- 左侧边栏 -->
-                    <Sidebar></Sidebar>
-                    <!-- 左侧边栏 -->
+        <div class="main">
 
-                    <!-- 二级路由/内容区域 -->
-                    <div class="main_container">
-                        <keep-alive>
-                            <component :is='routeViewer'></component>
-                        </keep-alive>
-                    </div>                  
-                    <!-- 二级路由 -->
+            <!-- 左侧边栏 -->
+            <Sidebar></Sidebar>
+            <!-- 左侧边栏 -->
 
-                </div>
+            <!-- 二级路由/内容区域 -->
+            <div class="main_container">
+                <keep-alive>
+                    <component :is='routeViewer'></component>
+                </keep-alive>
+            </div>
+            <!-- 二级路由 -->
 
-            <!-- 主体区域 -->
+        </div>
 
-            <!-- 底部区域 -->
+        <!-- 主体区域 -->
 
-                <Footer></Footer>
+        <!-- 底部区域 -->
 
-            <!-- 底部区域 -->
+        <Footer></Footer>
+
+        <!-- 底部区域 -->
     </div>
-
 </template>
 
 <script setup>
@@ -57,7 +56,7 @@ const router = useRouter()
 const routeViewer = shallowRef(findSong)
 
 // 监听路由
-watch(route,(val)=>{
+watch(route, (val) => {
     switch (val.meta.component) {
         case 'findSong':
             routeViewer.value = findSong
@@ -70,41 +69,45 @@ watch(route,(val)=>{
             break;
         case 'privateFM':
             routeViewer.value = privateFM
-            break; 
+            break;
         case 'Search':
             routeViewer.value = Search
-            break; 
+            break;
         case 'songList':
             routeViewer.value = songList
-            break;                         
+            break;
         default:
             break;
     }
-},{
-    deep:true,
-    immediate:true
+}, {
+    deep: true,
+    immediate: true
 })
 
 </script>
 
 <style lang="less" scoped>
-.main_body{
+.main_body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
-    min-height:500px;
-    .main{
+    min-height: 500px;
+
+    .main {
         flex: 1;
         display: flex;
         padding-top: 60px;
         box-sizing: border-box;
         height: 100%;
-        .main_container{
+
+        .main_container {
+            overflow: hidden;
+            border-radius: 30px 0 0 30px;
             flex: 1;
             min-width: 500px;
+            background-color: var(--inner-body-color);
         }
     }
 }
-
 </style>

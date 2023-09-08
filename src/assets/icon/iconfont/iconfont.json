@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5387495",
+      "name": "主题_调色盘",
+      "font_class": "zhuti_tiaosepan",
+      "unicode": "eaec",
+      "unicode_decimal": 60140
+    },
+    {
+      "icon_id": "34218692",
+      "name": "播放列表添加",
+      "font_class": "bofangliebiaotianjia",
+      "unicode": "e86a",
+      "unicode_decimal": 59498
+    },
+    {
+      "icon_id": "2815702",
+      "name": "播放",
+      "font_class": "bofang1",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "7594168",
+      "name": "24gf-playlistMusic4",
+      "font_class": "24gf-playlistMusic4",
+      "unicode": "ea86",
+      "unicode_decimal": 60038
+    },
+    {
+      "icon_id": "5618784",
+      "name": "音乐列表",
+      "font_class": "yinleliebiao",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "10487575",
+      "name": "收音机",
+      "font_class": "shouyinji",
+      "unicode": "e69d",
+      "unicode_decimal": 59037
+    },
+    {
+      "icon_id": "11982657",
+      "name": "Home, homepage, menu",
+      "font_class": "Homehomepagemenu",
+      "unicode": "e9ce",
+      "unicode_decimal": 59854
+    },
+    {
       "icon_id": "4510299",
       "name": "语音关闭",
       "font_class": "yuyinguanbi",

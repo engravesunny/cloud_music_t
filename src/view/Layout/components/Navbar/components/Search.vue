@@ -4,13 +4,16 @@
 
             <!-- 搜索图标 -->
             <div class="search_icon unselectable" @click="fnSearch">
-                <el-icon><Search style="width: 30px; height: 30px;cursor: pointer;" /></el-icon>
+                <el-icon>
+                    <Search style="width: 30px; height: 30px;cursor: pointer;" />
+                </el-icon>
             </div>
             <!-- 搜索图标 -->
 
             <!-- 搜索输入区域 -->
             <div class="search_input unselectable">
-                <input type="text" v-model="searchText" :placeholder="placeholder" @keydown.enter="fnSearch" @input="searchSuggestFn" @focus="showSuggest = true">
+                <input type="text" v-model="searchText" :placeholder="placeholder" @keydown.enter="fnSearch"
+                    @input="searchSuggestFn" @focus="showSuggest = true">
             </div>
             <!-- 搜索输入区域 -->
 
@@ -20,18 +23,18 @@
         <div v-if="showSuggest" @click="showSuggest = false" style="width:100vw;height:100vh;position:fixed;top:0;left:0;">
             <div v-if="showSuggest" class="suggest">
                 <div class="suggest_title">猜你想搜</div>
-                    <ul v-if="suggestList.length&&showSuggest&&searchText">
-                        <li class="suggest_cell" v-for="item in suggestList" :key="item.id" @click="suggestSearch(item.name)">
-                            {{ item.name }}{{  item.artists.length? ' - ':'' }}
-                            <span v-for="artist in item.artists" :key="artist.id">{{ artist.name+' ' }}</span>
-                        </li>
-                    </ul>
-                    <ul v-if="!suggestList.length&&showSuggest">
-                        <li class="suggest_cell" v-for="item in hotSong" :key="item.first" @click="suggestSearch(item.first)">
-                            {{ item.first }}
-                        </li>
-                    </ul>
-                </div>
+                <ul v-if="suggestList.length && showSuggest && searchText">
+                    <li class="suggest_cell" v-for="item in suggestList" :key="item.id" @click="suggestSearch(item.name)">
+                        {{ item.name }}{{ item.artists.length ? ' - ' : '' }}
+                        <span v-for="artist in item.artists" :key="artist.id">{{ artist.name + ' ' }}</span>
+                    </li>
+                </ul>
+                <ul v-if="!suggestList.length && showSuggest">
+                    <li class="suggest_cell" v-for="item in hotSong" :key="item.first" @click="suggestSearch(item.first)">
+                        {{ item.first }}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -50,12 +53,12 @@ let searchText = ref('')
 let showSuggest = ref(false)
 let hotSong = reactive([])
 // 初始化
-onMounted(async ()=>{
+onMounted(async () => {
     const { data } = await searchDefault()
     placeholder.value = data.data.showKeyword
     const res = await searchHot()
-    if(res.data.result){
-        res.data.result.hots.forEach(item=>{
+    if (res.data.result) {
+        res.data.result.hots.forEach(item => {
             hotSong.push(item)
         })
     }
@@ -64,21 +67,21 @@ onMounted(async ()=>{
 // 搜索enter键或按搜索图标
 const fnSearch = () => {
     showSuggest.value = false
-    if(searchText.value){
+    if (searchText.value) {
         // 输入了搜索输入的关键词
         router.push({
-            path:'/search',
-            query:{
-                searchValue:searchText.value
+            path: '/search',
+            query: {
+                searchValue: searchText.value
             }
         })
 
     } else {
         // 搜索placeholder
         router.push({
-            path:'/search',
-            query:{
-                searchValue:placeholder.value
+            path: '/search',
+            query: {
+                searchValue: placeholder.value
             }
         })
     }
@@ -90,7 +93,7 @@ let suggestList = reactive([])
 let timer = null
 
 // 搜索建议input事件
-let searchSuggestFn = async() => {
+let searchSuggestFn = async () => {
     // 显示suggest列表
     showSuggest.value = true
 
@@ -99,34 +102,34 @@ let searchSuggestFn = async() => {
     //置空suggest列表
     suggestList.length = 0
 
-    if(!searchText.value)return;
-    timer = setTimeout(async() => {
-        const {data} = await searchSuggest({
-            keywords:searchText.value
+    if (!searchText.value) return;
+    timer = setTimeout(async () => {
+        const { data } = await searchSuggest({
+            keywords: searchText.value
         })
-        if(data.result){
-        data.result.songs.forEach(item=>{
-            suggestList.push(item)
-        })
-        clearTimeout(timer)
-        timer = null
-    }
+        if (data.result) {
+            data.result.songs.forEach(item => {
+                suggestList.push(item)
+            })
+            clearTimeout(timer)
+            timer = null
+        }
     }, 200);
 }
 
 // 点击搜索建议搜索
-let suggestSearch = async(name)=>{
+let suggestSearch = async (name) => {
     router.push({
-            path:'/search',
-            query:{
-                searchValue:name
-            }
-        })
+        path: '/search',
+        query: {
+            searchValue: name
+        }
+    })
 }
 </script>
 
 <style lang="less" scoped>
-.search{
+.search {
     position: relative;
     display: flex;
     float: left;
@@ -134,8 +137,8 @@ let suggestSearch = async(name)=>{
     margin-left: 100px;
     width: 30%;
     height: 30px;
-    background-color: #fff;
-    .search_outline{
+
+    .search_outline {
         display: flex;
         align-items: center;
         padding-left: 10px;
@@ -144,25 +147,29 @@ let suggestSearch = async(name)=>{
         width: 100%;
         height: 34px;
         border-radius: 25px;
-        background: rgba(0, 0, 0, 0.1);
-        .search_icon{
+        background: rgb(227, 227, 238);
+
+        .search_icon {
             width: 30px;
             height: 30px;
             text-align: center;
             line-height: 30px;
             padding-top: 14px;
         }
-        .search_input{
+
+        .search_input {
             width: 100%;
-            input{
+
+            input {
                 width: 100%;
                 border: none;
-                background: rgba(0,0,0,0);
+                background: rgba(0, 0, 0, 0);
                 outline: none;
             }
         }
     }
-    .suggest{
+
+    .suggest {
         position: absolute;
         top: 60px;
         left: 370px;
@@ -170,24 +177,26 @@ let suggestSearch = async(name)=>{
         max-height: 80vh;
         border-radius: 10px;
         overflow: hidden;
-        box-shadow:3px 0 5px -5px #000;
+        box-shadow: 3px 0 5px -5px #000;
         background: rgba(252, 249, 249, 1);
-        .suggest_title{
-            padding:10px 10px 10px 10px;
+
+        .suggest_title {
+            padding: 10px 10px 10px 10px;
             font-size: 20px;
             font-weight: 700;
         }
-        .suggest_cell{
+
+        .suggest_cell {
             padding-left: 20px;
             box-sizing: border-box;
             width: 100%;
             height: 30px;
             line-height: 30px;
         }
-        .suggest_cell:hover{
+
+        .suggest_cell:hover {
             background-color: #ffebeb;
         }
     }
 }
-
 </style>

@@ -2,7 +2,7 @@
     <div class="singleSongContainer">
 
         <!-- 歌曲列表 -->
-        
+
         <!-- 表头标题 -->
         <div class="singleSongTitle">
             <div class="option">操作</div>
@@ -16,26 +16,28 @@
         <!-- 歌曲列表内容 -->
         <div class="songList">
             <ul>
-                <li v-for="(item,index) in result" :key="item.id" @dblclick="dblclickSong(item)">
+                <li v-for="(item, index) in result" :key="item.id" @dblclick="dblclickSong(item)">
                     <div class="option">
-                        <div  v-if="item.id===songState.currentPlayingSong.id" class="playingIcon iconfont">&#xe62e;</div>
-                        <div v-else class="index">{{ (index+1)<10?'0'+(index+1):(index+1) }}</div>
-                        <div @click="likeIt(item.id,false)" v-if="isLiked(item.id,userlikeIds)" class="iconfont">&#xe8c3;</div>
-                        <div @click="likeIt(item.id,true)" v-else class="iconfont">&#xe8ab;</div>
-                    </div>
-                    <div class="songName">
-                        {{ item.name }}
-                    </div>
-                    <div class="artistName">
-                        <div class="showName">
-                            {{ mulArShow(item.ar) }}
+                        <div v-if="item.id === songState.currentPlayingSong.id" class="playingIcon iconfont">&#xe62e;</div>
+                        <div v-else class="index">{{ (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }}</div>
+                                <div @click="likeIt(item.id, false)" v-if="isLiked(item.id, userlikeIds)" class="iconfont">
+                                    &#xe8c3;</div>
+                                <div @click="likeIt(item.id, true)" v-else class="iconfont">&#xe8ab;</div>
                         </div>
-                    </div>
-                    <div class="ablumName">{{ item.al.name }}</div>
-                    <div class="timeLength">{{ formatTime(item.dt) }}</div>
-                    <div class="hotLength">
-                        <el-progress :percentage="item.pop" :show-text="false" color="#a8a8a8" style="width:80%" />
-                    </div>
+                        <div class="songName">
+                            {{ item.name }}
+                        </div>
+                        <div class="artistName">
+                            <div class="showName">
+                                {{ mulArShow(item.ar) }}
+                            </div>
+                        </div>
+                        <div class="ablumName">{{ item.al.name }}</div>
+                        <div class="timeLength">{{ formatTime(item.dt) }}</div>
+                        <div class="hotLength">
+                            <el-progress :percentage="item.pop" :show-text="false" color="var(--click-enable-color)"
+                                style="width:80%" />
+                        </div>
                 </li>
             </ul>
         </div>
@@ -43,18 +45,12 @@
 
         <!-- 列表分页导航 -->
         <div v-if="songTotal" class="page">
-            <el-pagination
-                :page-size="100"
-                :pager-count="11"
-                :current-page="currentPages+1"
-                layout="prev, pager, next"
-                :total="songTotal"
-                @current-change="currentChange"
-            />
+            <el-pagination :page-size="100" :pager-count="11" :current-page="currentPages + 1" layout="prev, pager, next"
+                :total="songTotal" @current-change="currentChange" />
         </div>
         <!-- 列表分页导航 -->
 
-        </div>
+    </div>
 </template>
 
 <script setup>
@@ -95,18 +91,18 @@ const mulArShow = mulArShows
 
 let songState = reactive({})
 
-watch(()=>songInfo.value,(val)=>{
-    songState= songInfo.value
-},{
-    deep:true,
-    immediate:true
+watch(() => songInfo.value, (val) => {
+    songState = songInfo.value
+}, {
+    deep: true,
+    immediate: true
 })
 
-if(songInfo.value.currentPlayingSong){
+if (songInfo.value.currentPlayingSong) {
     songState = songInfo.value
 } else {
-    if(localStorage.getItem('PLAYING_STATE')){
-            songInfo.value = JSON.parse(localStorage.getItem('PLAYING_STATE'))
+    if (localStorage.getItem('PLAYING_STATE')) {
+        songInfo.value = JSON.parse(localStorage.getItem('PLAYING_STATE'))
     }
     songState = songInfo.value
 }
@@ -118,107 +114,127 @@ const router = useRouter()
 const currentPage = ref(0)
 
 // 接收父组件数据
-let props = defineProps(['result','songTotal','currentPages'])
+let props = defineProps(['result', 'songTotal', 'currentPages'])
 const emit = defineEmits(['updatePage'])
 
-let results = computed(()=>{ return result })
+let results = computed(() => { return result })
 // 页码改变
-const currentChange = (page)=>{
+const currentChange = (page) => {
     currentPage.value = page
-    emit('updatePage',currentPage)
+    emit('updatePage', currentPage)
 }
 
 // 用户喜欢歌曲id列表
 let userlikeIds = reactive([])
 
 // 获取用户喜欢列表
-const getLikeIds =async () => {
-    const {data} = await getMyFavourite({
-        uid:userInfo.value.id
+const getLikeIds = async () => {
+    const { data } = await getMyFavourite({
+        uid: userInfo.value.id
     })
-    if(data.ids){
-        data.ids.map(item=>{
+    if (data.ids) {
+        data.ids.map(item => {
             userlikeIds.push(item)
         })
     }
 }
 // 用户点击喜欢
-const likeIt = async(id,like) => {
+const likeIt = async (id, like) => {
     const res = await toLikeSong({
-        id,like
+        id, like
     })
     getLikeIds()
     router.go(0)
 }
-onMounted(async()=>{
+onMounted(async () => {
     getLikeIds()
 })
 </script>
 
 <style lang="less" scoped>
-.singleSongContainer{
+.singleSongContainer {
     width: 100%;
     height: 100%;
     min-width: 962px;
-    .singleSongTitle{
+
+    .singleSongTitle {
+        margin-left: 20px;
         display: flex;
         justify-content: flex-start;
         width: 100%;
         font-size: 14px;
         color: #888888;
-        .option{
+
+        .option {
             box-sizing: border-box;
             padding-left: 70px;
             width: 10.2%;
         }
-        .songName{
+
+        .songName {
             box-sizing: border-box;
             padding-left: 40px;
             width: 30%;
         }
-        .artistName{
+
+        .artistName {
             width: 20%;
         }
-        .ablumName{
+
+        .ablumName {
             width: 20%;
         }
-        .timeLength{
+
+        .timeLength {
             width: 10%;
         }
-        .hotLength{
+
+        .hotLength {
             width: 10%;
         }
     }
-    .songList{
+
+    .songList {
         font-size: 14px;
-        li{
+        margin: 10px 0 0 20px;
+        padding: 20px 0;
+        background-color: var(--song-li-color);
+        border-radius: 20px 0 0 20px;
+        box-shadow: 0 0 5px 2px rgba(37, 128, 255, 0.1);
+
+        li {
             // position: relative;
             width: 100%;
             height: 40px;
-            background-color: #FAFAFA;
+            background-color: var(--song-li-color);
             display: flex;
             line-height: 40px;
             box-sizing: border-box;
             cursor: pointer;
-            .option{
+
+            .option {
                 box-sizing: border-box;
                 padding-left: 70px;
                 width: 10.2%;
                 display: flex;
                 justify-content: flex-start;
-                .playingIcon{
+
+                .playingIcon {
                     margin-left: -40px !important;
                 }
-                .index{
+
+                .index {
                     margin-left: -40px;
                 }
-                .iconfont{
-                    margin-left:28px;
+
+                .iconfont {
+                    margin-left: 28px;
                     color: red;
                     cursor: pointer;
                 }
             }
-            .songName{
+
+            .songName {
                 box-sizing: border-box;
                 padding-left: 40px;
                 width: 30%;
@@ -228,18 +244,21 @@ onMounted(async()=>{
                 box-sizing: border-box;
                 padding-right: 10px;
             }
-            .artistName{
+
+            .artistName {
                 width: 20%;
                 box-sizing: border-box;
                 padding-right: 10px;
-                .showName{
+
+                .showName {
                     width: 200px;
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
                 }
             }
-            .ablumName{
+
+            .ablumName {
                 width: 20%;
                 overflow: hidden;
                 white-space: nowrap;
@@ -247,22 +266,27 @@ onMounted(async()=>{
                 box-sizing: border-box;
                 padding-right: 10px;
             }
-            .timeLength{
+
+            .timeLength {
                 width: 10%;
             }
-            .hotLength{
+
+            .hotLength {
                 width: 10%;
                 display: flex;
             }
         }
-        li:nth-child(2n){
-            background-color: #fff;
+
+        li:nth-child(2n) {
+            background-color: var(--song-li-color);
         }
-        li:hover{
-            background-color: #f2f2f3;
+
+        li:hover {
+            background-color: var(--song-hover-color);
         }
     }
-    .page{
+
+    .page {
         width: 100%;
         height: 100px;
         display: flex;

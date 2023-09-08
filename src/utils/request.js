@@ -1,10 +1,11 @@
 import axios from 'axios'
 
+const baseURL = import.meta.env.VITE_SRC
 const request = axios.create({
   // baseURL:'/api',
   // baseURL:'http://localhost:3000/',
   // baseURL:'http://47.93.87.206:3000/',
-  baseURL: 'https://kecat.top:3000',
+  baseURL,
   withCredentials: true,
   timeout: 10000
 })

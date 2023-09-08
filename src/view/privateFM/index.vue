@@ -6,7 +6,7 @@
                 <!-- 左侧歌曲封面和操作按钮 -->
                 <div class="options_left">
                     <div class="img">
-                        <el-image style="border-radius:10px" :src="FMInfo[index].album.picUrl" alt="" ></el-image>
+                        <el-image style="border-radius:10px" :src="FMInfo[index].album.picUrl" alt=""></el-image>
                         <div class="playbtn"></div>
                     </div>
                     <div class="btn">
@@ -56,20 +56,16 @@
 
                 <!-- 歌曲评论 -->
                 <div class="high_commit_Box">
-                    <h3><div class="title">精彩评论</div></h3>
-                    <commitCell
-                     v-for="item in highCommits"
-                     :key="item.commentId"
-                     :comment="item"
-                    ></commitCell>
+                    <h3>
+                        <div class="title">精彩评论</div>
+                    </h3>
+                    <commitCell v-for="item in highCommits" :key="item.commentId" :comment="item"></commitCell>
                 </div>
                 <div class="normal_commit_box">
-                    <h3><div class="title">最新评论</div></h3>
-                    <commitCell
-                     v-for="item in normalCommits"
-                     :key="item.commentId"
-                     :comment="item"
-                     ></commitCell>
+                    <h3>
+                        <div class="title">最新评论</div>
+                    </h3>
+                    <commitCell v-for="item in normalCommits" :key="item.commentId" :comment="item"></commitCell>
                 </div>
                 <!-- 歌曲评论 -->
             </div>
@@ -95,24 +91,24 @@ const router = useRouter()
 
 let isLiking = ref(false)
 let FMInfo = reactive([])
-let index = ref(0) 
+let index = ref(0)
 let highCommits = reactive([])
 let total = ref(0)
 let normalCommits = reactive([])
 
-const route= useRoute()
+const route = useRoute()
 let isFMMode = ref(false)
 // 获取歌曲
-const getFMSongs = async() => {
+const getFMSongs = async () => {
     FMInfo = reactive([])
-    const {data} = await privateFM()
-    data.data.map(item=>{
+    const { data } = await privateFM()
+    data.data.map(item => {
         FMInfo.push(item)
     })
     getCommits()
 }
 // 播放歌曲
-const playIt = async() => {
+const playIt = async () => {
     isFMMode.value = true
     await FMMode(true)
     await playSong(FMInfo[index.value])
@@ -123,9 +119,9 @@ const playIt = async() => {
     }
 }
 // 下一首FM
-const nextFM = async() => {
+const nextFM = async () => {
     index.value = index.value + 1
-    if(FMInfo[index.value]){
+    if (FMInfo[index.value]) {
         playIt()
         getCommits()
     } else {
@@ -135,25 +131,25 @@ const nextFM = async() => {
     }
 }
 // 获取歌曲评论
-const getCommits = async() => {
+const getCommits = async () => {
     normalCommits = reactive([])
     highCommits = reactive([])
-    const {data} = await getSongCommits({
-        id:FMInfo[index.value].id
+    const { data } = await getSongCommits({
+        id: FMInfo[index.value].id
     })
-    data.comments.map(item=>{
+    data.comments.map(item => {
         normalCommits.push(item)
     })
-    data.hotComments.map(item=>{
+    data.hotComments.map(item => {
         highCommits.push(item)
     })
     total.value = data.total
 }
 
 // 点击喜欢红心
-const likeIt = async(like) => {
+const likeIt = async (like) => {
     const res = await toLikeSong({
-        id:FMInfo[index.value].id,
+        id: FMInfo[index.value].id,
         like
     })
     isLiking.value = like
@@ -162,161 +158,171 @@ const likeIt = async(like) => {
 
 let likeIds = reactive([])
 
-const updateLikeIds = async() => {
+const updateLikeIds = async () => {
     const ids = await myLikeIds()
     likeIds = reactive([...ids])
 }
-onMounted(async()=>{
+onMounted(async () => {
     await getFMSongs()
     await updateLikeIds()
-    isLiking.value = isLiked(FMInfo[index.value].id,likeIds)
+    isLiking.value = isLiked(FMInfo[index.value].id, likeIds)
 })
 
-watch(route,(val)=>{
-    if(val.path!=='/privateFM'&&isFMMode.value){
+watch(route, (val) => {
+    if (val.path !== '/privateFM' && isFMMode.value) {
         FMMode(false)
     }
-},{
-    deep:true,
-    immediate:true
+}, {
+    deep: true,
+    immediate: true
 })
 
 
 </script>
 
 <style lang="less" scoped>
-.pricateFM_container{
+.pricateFM_container {
     width: 100%;
     min-width: 871px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-bottom: 75px;
-    .top{
+
+    .top {
         width: 100%;
         height: 600px;
-        // background-color: pink;
         display: flex;
         justify-content: center;
         align-items: center;
-        .options_left{
+
+        .options_left {
             width: 400px;
             height: 500px;
-            // background-color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            .img{
+
+            .img {
                 margin: 20px;
                 width: 300px;
                 height: 300px;
-                // background-color: pink;
-                img{
+
+                img {
                     width: 300px;
                     height: 300px;
                     border-radius: 10px;
                 }
             }
-            .btn{
+
+            .btn {
                 width: 300px;
                 height: 100px;
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-                button{
+
+                button {
                     padding-left: 2px;
-                    color: rgba(247, 116, 192,1);
+                    color: var(--click-enable-color);
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     text-align: center;
                     line-height: 60px;
                     font-size: 30px;
-                    width:60px;
-                    height:60px;
-                    border-radius:50%;
-                    border: 1px solid rgba(247, 116, 192,1);
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    border: 1px solid var(--click-enable-color);
                     cursor: pointer;
                 }
-                button:hover{
+
+                button:hover {
                     background: rgba(255, 255, 255, 0.5);
                 }
             }
         }
-        .songInfo_right{
+
+        .songInfo_right {
             width: 400px;
             height: 500px;
-            // background-color: skyblue;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            .songInfo{
+
+            .songInfo {
                 margin: 20px;
                 width: 300px;
                 height: 100px;
-                // background-color: #fff;
                 display: flex;
                 flex-direction: column;
-                .name{
+
+                .name {
                     padding: 5px;
                 }
-                .other{
+
+                .other {
                     display: flex;
                     padding: 5px;
                     font-size: 14px;
                     justify-content: flex-start;
-                    .ablum{
+
+                    .ablum {
                         margin: 5px;
                         width: 150px;
                     }
-                    .singer{
+
+                    .singer {
                         width: 150px;
                         margin: 5px;
                     }
                 }
             }
-            .songText{
+
+            .songText {
                 width: 300px;
                 height: 300px;
                 text-align: center;
                 color: gray;
-                // background-color: gray;
             }
         }
     }
-    .bottom{
+
+    .bottom {
         width: 100%;
         height: 900px;
-        // background-color: pink;
         display: flex;
         flex-direction: column;
         align-items: center;
-        .sendCommit_Box{
+
+        .sendCommit_Box {
             width: 80%;
             height: 200px;
-            background-color: #fff;
             display: flex;
             flex-direction: column;
             padding-bottom: 20px;
-            .title{
+
+            .title {
                 font-size: 20px;
                 font-weight: 700;
-                .ds{
+
+                .ds {
                     font-size: 14px;
                     font-weight: 500;
                     color: rgb(123, 122, 122);
                 }
             }
-            .input_box{
-                
-            }
+
+            .input_box {}
         }
-        .normal_commit_box,.high_commit_Box{
+
+        .normal_commit_box,
+        .high_commit_Box {
             width: 80%;
             padding-bottom: 75px;
         }
     }
 }
-    
 </style>
