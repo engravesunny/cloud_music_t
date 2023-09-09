@@ -24,7 +24,6 @@ declare module '@vue/runtime-core' {
     SongListPage: typeof import('./components/songListPage/index.vue')['default']
   }
   export interface ComponentCustomProperties {
-    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

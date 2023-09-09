@@ -9,7 +9,9 @@
     --song-li-color: #fff;
     --click-enable-color: rgb(159, 116, 231);
     --inner-body-color: rgb(249, 247, 249);
-    --drag-box-color: rgb(240, 234, 247);
+    --drag-box-color: var(--suggest-bg-color);
+    --search-bg-color: var(--siderbar-hover-color);
+    --suggest-bg-color: rgb(240, 234, 247);
 }
 
 
@@ -34,3 +36,4 @@
 --song-li-color: rgb(26, 24, 30);
 --click-enable-color: rgb(216, 196, 241);
 --inner-body-color: rgb(34, 31, 38);
+--suggest-bg-color: rgb(53, 48, 59);

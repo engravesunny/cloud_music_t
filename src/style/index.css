@@ -10,7 +10,7 @@ img {
 }
 
 * {
-  transition: all .5s;
+  transition: background .5s;
 }
 
 body {

@@ -137,6 +137,7 @@ let suggestSearch = async (name) => {
     margin-left: 100px;
     width: 30%;
     height: 30px;
+    color: var(--font-color-global) !important;
 
     .search_outline {
         display: flex;
@@ -147,7 +148,7 @@ let suggestSearch = async (name) => {
         width: 100%;
         height: 34px;
         border-radius: 25px;
-        background: rgb(227, 227, 238);
+        background: var(--search-bg-color);
 
         .search_icon {
             width: 30px;
@@ -165,6 +166,7 @@ let suggestSearch = async (name) => {
                 border: none;
                 background: rgba(0, 0, 0, 0);
                 outline: none;
+                color: var(--font-color-global);
             }
         }
     }
@@ -178,7 +180,7 @@ let suggestSearch = async (name) => {
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 3px 0 5px -5px #000;
-        background: rgba(252, 249, 249, 1);
+        background: var(--suggest-bg-color);
 
         .suggest_title {
             padding: 10px 10px 10px 10px;
@@ -195,7 +197,8 @@ let suggestSearch = async (name) => {
         }
 
         .suggest_cell:hover {
-            background-color: #ffebeb;
+            background-color: var(--siderbar-active-color);
+            cursor: pointer;
         }
     }
 }
