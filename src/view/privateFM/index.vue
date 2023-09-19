@@ -6,7 +6,7 @@
                 <!-- 左侧歌曲封面和操作按钮 -->
                 <div class="options_left">
                     <div class="img">
-                        <el-image style="border-radius:10px" :src="FMInfo[index].album.picUrl" alt=""></el-image>
+                        <el-image style="border-radius:10px" :src="FMInfo[index].album.picUrl" alt="img"></el-image>
                         <div class="playbtn"></div>
                     </div>
                     <div class="btn">
@@ -36,9 +36,7 @@
                             <div class="singer shenglue">歌手: {{ mulArShow(FMInfo[index].artists) }}</div>
                         </div>
                     </div>
-                    <div class="songText">
-                        歌词内容未开发
-                    </div>
+                    <song-text :audio="audioDom" :index="index" :song-text="songTextInfo" />
                 </div>
                 <!-- 右侧歌曲信息和歌词 -->
             </div>
@@ -75,7 +73,8 @@
 </template>
 
 <script setup>
-
+import { getSongText } from '@/api/song.ts'
+import songText from './components/songText.vue'
 import { toLikeSong } from '@/api/myFavourite.js'
 import isLiked from '@/utils/isLiked.js'
 import myLikeIds from '@/utils/myLikeIds.js'
@@ -86,18 +85,35 @@ import { privateFM } from '@/api/myFavourite'
 import { getSongCommits } from '@/api/songList.js'
 import mulArShow from '../../utils/mulArShow';
 
-
 const router = useRouter()
+const route = useRoute()
+const audioDom = ref();
 
+// 歌词信息
+const songTextInfo = reactive([])
+
+// 是否为喜欢歌曲
 let isLiking = ref(false)
 let FMInfo = reactive([])
 let index = ref(0)
 let highCommits = reactive([])
 let total = ref(0)
 let normalCommits = reactive([])
-
-const route = useRoute()
 let isFMMode = ref(false)
+
+// 获取歌词
+const handleGetSongText = async (id) => {
+    if (songTextInfo.length) {
+        songTextInfo.length = 0;
+    }
+    const promises = FMInfo.map(item => getSongText({ id: item.id }))
+    const data = await Promise.all(promises);
+
+    data.forEach(({ data }) => {
+        const text = data?.lrc?.lyric
+        songTextInfo.push(text);
+    });
+}
 // 获取歌曲
 const getFMSongs = async () => {
     FMInfo = reactive([])
@@ -105,7 +121,10 @@ const getFMSongs = async () => {
     data.data.map(item => {
         FMInfo.push(item)
     })
-    getCommits()
+    // 获取歌词
+    await handleGetSongText();
+    // 获取歌曲评论
+    await getCommits()
 }
 // 播放歌曲
 const playIt = async () => {
@@ -113,6 +132,7 @@ const playIt = async () => {
     await FMMode(true)
     await playSong(FMInfo[index.value])
     let audio = document.querySelector('audio')
+    audioDom.value = audio;
     audio.onended = () => {
         nextFM()
         audio.onended = null
@@ -120,11 +140,14 @@ const playIt = async () => {
 }
 // 下一首FM
 const nextFM = async () => {
+
     index.value = index.value + 1
     if (FMInfo[index.value]) {
         playIt()
         getCommits()
     } else {
+        const audio = document.querySelector('audio')
+        audio.pause();
         index.value = 0
         await getFMSongs()
         playIt()
@@ -132,42 +155,57 @@ const nextFM = async () => {
 }
 // 获取歌曲评论
 const getCommits = async () => {
-    normalCommits = reactive([])
-    highCommits = reactive([])
-    const { data } = await getSongCommits({
-        id: FMInfo[index.value].id
-    })
-    data.comments.map(item => {
-        normalCommits.push(item)
-    })
-    data.hotComments.map(item => {
-        highCommits.push(item)
-    })
-    total.value = data.total
+    try {
+        normalCommits = reactive([])
+        highCommits = reactive([])
+        const { data } = await getSongCommits({
+            id: FMInfo[index.value].id
+        })
+        data.comments.map(item => {
+            normalCommits.push(item)
+        })
+        data.hotComments.map(item => {
+            highCommits.push(item)
+        })
+        total.value = data.total
+    } catch (error) {
+        ElMessage.error(error);
+    }
 }
 
 // 点击喜欢红心
 const likeIt = async (like) => {
-    const res = await toLikeSong({
-        id: FMInfo[index.value].id,
-        like
-    })
-    isLiking.value = like
-    updateLikeIds()
+    try {
+        await toLikeSong({
+            id: FMInfo[index.value].id,
+            like
+        })
+        isLiking.value = like
+        updateLikeIds()
+    } catch (error) {
+        ElMessage.error(error);
+    }
 }
 
+// 喜欢的歌曲ids
 let likeIds = reactive([])
-
 const updateLikeIds = async () => {
     const ids = await myLikeIds()
-    likeIds = reactive([...ids])
+    likeIds = likeIds.concat(ids);
 }
-onMounted(async () => {
+
+// 初始化
+const init = async () => {
     await getFMSongs()
     await updateLikeIds()
     isLiking.value = isLiked(FMInfo[index.value].id, likeIds)
+}
+
+onMounted(() => {
+    init();
 })
 
+// 进入非FM页面时关闭FM模式
 watch(route, (val) => {
     if (val.path !== '/privateFM' && isFMMode.value) {
         FMMode(false)
@@ -279,13 +317,6 @@ watch(route, (val) => {
                         margin: 5px;
                     }
                 }
-            }
-
-            .songText {
-                width: 300px;
-                height: 300px;
-                text-align: center;
-                color: gray;
             }
         }
     }
