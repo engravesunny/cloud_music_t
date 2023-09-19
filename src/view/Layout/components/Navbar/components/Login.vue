@@ -43,7 +43,7 @@ import 'element-plus/theme-chalk/el-message.css';
 
 //  二维码转图片库
 import { qrKey, qrCreate, qrCheck, getUserInfoDetail } from '@/api/user.js'
-import { reactive } from 'vue'
+import { onBeforeMount, reactive } from 'vue'
 import QRCode from 'qrcode'
 import { ElMessage } from 'element-plus'
 import { user } from '@/store/user'
@@ -86,6 +86,8 @@ let userInfos = reactive({
 let qrurl = ref('')
 // 二维码状态信息
 let qrStatus = ref('')
+
+
 
 // 登录
 onMounted(async () => {
@@ -194,4 +196,5 @@ onMounted(async () => {
             margin-left: -30px;
         }
     }
-}</style>
+}
+</style>

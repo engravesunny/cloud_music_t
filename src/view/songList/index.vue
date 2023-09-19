@@ -16,23 +16,16 @@ let songlistId = ref('')
 
 let songListInfo = reactive([])
 
-onMounted(async () => {
-  songlistId.value = route.query.songListInfoId
-  const { data } = await getSongListDetail({
-    id: songlistId.value
-  })
-  songListInfo.push(data.playlist)
-})
-
 watch(route, async (val) => {
   if (!val.query.songListInfoId) return
   songlistId.value = val.query.songListInfoId
+  songListInfo.pop()
   const { data } = await getSongListDetail({
     id: songlistId.value
   })
-  songListInfo.pop()
   songListInfo.push(data.playlist)
 }, {
-  deep: true
+  deep: true,
+  immediate: true
 })
 </script>

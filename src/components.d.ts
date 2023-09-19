@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElButtton: typeof import('element-plus/es')['ElButtton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCollapse: typeof import('element-plus/es')['ElCollapse']
     ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
@@ -22,6 +23,9 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SingleSong: typeof import('./components/singleSong/index.vue')['default']
     SongListPage: typeof import('./components/songListPage/index.vue')['default']
+    VirtualList: typeof import('./components/virtualList/index.vue')['default']
+    VirtualListDev: typeof import('./components/virtualListDev/index.vue')['default']
+    VirtualListNews: typeof import('./components/virtualListNews/index.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

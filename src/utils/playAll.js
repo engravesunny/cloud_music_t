@@ -12,6 +12,6 @@ const playAll = (arr) => {
     playSong(songInfo.value.songList[0])
 }
 export const addList = (list) => {
-    songInfo.value.songList = [...songInfo.value.songList, ...list];
+    songInfo.value.songList = [...list];
 }
 export default playAll

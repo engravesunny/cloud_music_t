@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar>
-    <div>
+    <div v-loading="!songListInfo.length">
       <songListPage :songListInfo="songListInfo"></songListPage>
     </div>
   </el-scrollbar>
@@ -36,10 +36,7 @@ onMounted(async () => {
     const { data } = await getUserSongList({
       uid: userInfo.value.id
     })
-    const res = await getSongListDetail({
-      id: data.playlist[0].id
-    })
-    songListInfo.push(res.data.playlist)
+    songListInfo.push(data.playlist[0])
   } catch (error) {
     Promise.reject(error)
   }

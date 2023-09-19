@@ -98,12 +98,13 @@ watch(route, (val) => {
         flex: 1;
         display: flex;
         padding-top: 60px;
+        padding-bottom: 65px;
         box-sizing: border-box;
         height: 100%;
 
         .main_container {
             overflow: hidden;
-            border-radius: 30px 0 0 30px;
+            border-radius: 30px 0 0 0px;
             flex: 1;
             min-width: 500px;
             background-color: var(--inner-body-color);

@@ -42,6 +42,7 @@ import { getIcon } from '../../../../utils/getIcon';
 import { getUserSongList } from '@/api/myFavourite.js'
 import { user } from '@/store/user'
 import { storeToRefs } from 'pinia';
+import { watch } from 'vue';
 const userStore = user()
 const { userInfo } = storeToRefs(userStore)
 

@@ -1,7 +1,8 @@
 <template>
-    <div v-loading="loading || !songList_info[0]" class="songListPage_container unselectable">
+    <div class="songListPage_container unselectable">
         <!-- 歌单信息 -->
-        <div v-if="songList_info[0]" class="songList_Info">
+        <div v-loading="loading || !songList_info[0] || !songList_info[0].coverImgUrl" v-if="songList_info[0]"
+            class="songList_Info">
             <!-- 歌单封面（左边） -->
             <div v-if="songList_info[0]" class="list_cover">
                 <img :src="songList_info[0].coverImgUrl" alt="">
@@ -58,7 +59,8 @@
         <!-- 歌单信息 -->
 
         <!-- 歌曲列表 -->
-        <singleSong v-loading="!songList.length" :songTotal="0" :current-pages="0" :result="songList"></singleSong>
+        <singleSong v-if="songList.length" v-loading="!songList.length" :songTotal="0" :current-pages="0"
+            :result="songList"></singleSong>
         <!-- 歌曲列表 -->
         <!-- 加载状态 -->
         <p class="loading" v-if="isloading">Loading...</p>
@@ -76,11 +78,11 @@ import { getSongListAllSong } from '@/api/songList.js'
 import { onMounted } from 'vue';
 const props = defineProps(['songListInfo'])
 let timer = null
-let loading = ref(false)
+let loading = ref(true)
 let songList = reactive([])
 let offset = ref(0)
 let isMounted = ref(false)
-let isloading = ref(false)
+let isloading = ref(true)
 let finished = ref(false)
 const observerDom = ref(null);
 
@@ -151,6 +153,7 @@ watch(props, async (val) => {
     offset.value = 0
     isMounted.value = false
     loading.value = true
+    songList.length = 0;
     const res = await getSongListAllSong({
         id: val?.songListInfo[0]?.id,
         limit: 50,
@@ -158,10 +161,6 @@ watch(props, async (val) => {
     })
     songList_info.pop()
     songList_info.push(val.songListInfo[0])
-    const num = songList.length
-    for (let i = 0; i < num; i++) {
-        songList.pop()
-    }
     res.data?.songs?.map(item => {
         songList.push(item)
     })
