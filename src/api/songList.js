@@ -45,6 +45,13 @@ export const getSongCommits = (params) =>
     params,
   });
 
+// 发送歌曲评论
+
+export const sendComment = (params) => request({
+  url: "/comment",
+  params
+})
+
 // 获取歌单详情
 
 export const getSongListDetail = (params) =>

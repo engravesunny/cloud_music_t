@@ -12,6 +12,7 @@ export default defineConfig({
   base: './',
   server: {
     port: 4000,
+    open: true,
     proxy: {
       '/api': {
         target: 'https://kecat.top:3000/',

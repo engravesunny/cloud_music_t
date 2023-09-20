@@ -133,28 +133,28 @@ onBeforeUnmount(() => {
         width: 100%;
         height: calc(100vh - 135px);
         display: flex;
-        flex-direction: column;
+        align-items: center;
     }
 
     &-list {
         width: 100%;
-        height: 100%;
         box-sizing: border-box;
+        height: 100%;
         padding: 20px;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
     &-rows {
-        margin-bottom: 10px;
-        height: 250px;
-        align-self: stretch;
-        box-sizing: border-box;
         width: 100%;
+        margin-bottom: 10px;
+        max-width: 1260px;
+        height: 250px;
+        box-sizing: border-box;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         column-gap: 5%;
-        align-items: center;
     }
 
     &-cols {

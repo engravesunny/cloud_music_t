@@ -66,7 +66,9 @@ const handleText = (text: string) => {
         const items = cutSongText(item) as songTextItem[]
         res.push(...items);
     })
-    return res;
+    return res.sort((a: songTextItem, b: songTextItem) => {
+        return a.time - b.time;
+    })
 }
 
 onMounted(() => {
@@ -86,9 +88,6 @@ watch(() => props.songText, (val: any[]) => {
 })
 watch(() => props.audio, () => {
     props.audio.addEventListener('timeupdate', updateCurTime);
-    props.audio.onended = () => {
-        props.audio.removeEventListener('timeupdate', updateCurTime);
-    }
 }, {
     deep: true,
 })

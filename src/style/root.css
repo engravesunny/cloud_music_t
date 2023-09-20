@@ -31,6 +31,10 @@
     --el-collapse-content-text-color: var(--font-color-global) !important;
 }
 
+.el-textarea__inner {
+    --el-fill-color-blank: var(--bg-color-global) !important;
+}
+
 /* --bg-color-global: rgb(40, 36, 44);
 --font-color-global: rgb(202, 183, 224);
 --siderbar-hover-color: rgb(49, 44, 55);

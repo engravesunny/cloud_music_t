@@ -1,12 +1,13 @@
 <template>
-    <el-scrollbar>
+    <el-scrollbar ref="scrollbar">
         <div v-if="FMInfo.length" class="pricateFM_container unselectable">
             <!-- 顶部歌曲内容 -->
-            <div v-if="FMInfo.length" class="top">
+            <div class="top">
                 <!-- 左侧歌曲封面和操作按钮 -->
                 <div class="options_left">
                     <div class="img">
-                        <el-image style="border-radius:10px" :src="FMInfo[index].album.picUrl" alt="img"></el-image>
+                        <el-image style="border-radius:10px;height: 100%;width: 100%;" fit="cover"
+                            :src="FMInfo[index].album.picUrl" alt="img"></el-image>
                         <div class="playbtn"></div>
                     </div>
                     <div class="btn">
@@ -41,30 +42,22 @@
                 <!-- 右侧歌曲信息和歌词 -->
             </div>
             <!-- 顶部歌曲内容 -->
+
             <!-- 底部评论内容 -->
             <div class="bottom">
                 <!-- 发送评论 -->
                 <div class="sendCommit_Box">
                     <div class="title">评论<span class="ds">（已有{{ total }}条评论）</span></div>
                     <div class="input_box">
-                        <el-input type="textarea" rows="6" placeholder="发布评论"></el-input>
+                        <div class="commentBtn" v-if="commentText" @click="handleSendComment">发送</div>
+                        <textarea v-model="commentText" placeholder="发一条评论吧" class="commentText" name="评论区"
+                            id="comment"></textarea>
                     </div>
                 </div>
                 <!-- 发送评论 -->
 
                 <!-- 歌曲评论 -->
-                <div class="high_commit_Box">
-                    <h3>
-                        <div class="title">精彩评论</div>
-                    </h3>
-                    <commitCell v-for="item in highCommits" :key="item.commentId" :comment="item"></commitCell>
-                </div>
-                <div class="normal_commit_box">
-                    <h3>
-                        <div class="title">最新评论</div>
-                    </h3>
-                    <commitCell v-for="item in normalCommits" :key="item.commentId" :comment="item"></commitCell>
-                </div>
+                <normal-commit @update-total="updateTotal" :FMInfo="FMInfo" :index="index"></normal-commit>
                 <!-- 歌曲评论 -->
             </div>
             <!-- 底部评论内容 -->
@@ -73,6 +66,7 @@
 </template>
 
 <script setup>
+import normalCommit from './components/normalCommit.vue'
 import { getSongText } from '@/api/song.ts'
 import songText from './components/songText.vue'
 import { toLikeSong } from '@/api/myFavourite.js'
@@ -80,10 +74,33 @@ import isLiked from '@/utils/isLiked.js'
 import myLikeIds from '@/utils/myLikeIds.js'
 import FMMode from '@/utils/FMMode.js'
 import playSong from '@/utils/playSong.js'
-import commitCell from './components/commitCell.vue'
 import { privateFM } from '@/api/myFavourite'
-import { getSongCommits } from '@/api/songList.js'
 import mulArShow from '../../utils/mulArShow';
+import { sendComment } from '@/api/songList.js'
+
+
+const scrollbar = ref()
+provide('scrollbar', scrollbar);
+
+const commentText = ref('')
+const handleSendComment = async () => {
+    try {
+        const { data } = await sendComment({
+            id: FMInfo[index.value].id,
+            type: 0,
+            t: 1,
+            content: commentText.value
+        })
+        if (data.code === 200) {
+            ElMessage.success('发送成功')
+        } else {
+            ElMessage.error('发送失败')
+        }
+        commentText.value = ''
+    } catch (error) {
+        ElMessage.error('内部错误')
+    }
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -96,11 +113,13 @@ const songTextInfo = reactive([])
 let isLiking = ref(false)
 let FMInfo = reactive([])
 let index = ref(0)
-let highCommits = reactive([])
-let total = ref(0)
-let normalCommits = reactive([])
 let isFMMode = ref(false)
 
+// 评论数
+const total = ref(0)
+const updateTotal = (ttl) => {
+    total.value = ttl;
+}
 // 获取歌词
 const handleGetSongText = async (id) => {
     if (songTextInfo.length) {
@@ -123,8 +142,6 @@ const getFMSongs = async () => {
     })
     // 获取歌词
     await handleGetSongText();
-    // 获取歌曲评论
-    await getCommits()
 }
 // 播放歌曲
 const playIt = async () => {
@@ -136,40 +153,22 @@ const playIt = async () => {
     audio.onended = () => {
         nextFM()
         audio.onended = null
+        audio.ontimeupdate = null
     }
 }
 // 下一首FM
 const nextFM = async () => {
-
     index.value = index.value + 1
     if (FMInfo[index.value]) {
+        isLiking.value = isLiked(FMInfo[index.value].id, likeIds)
         playIt()
-        getCommits()
     } else {
         const audio = document.querySelector('audio')
         audio.pause();
         index.value = 0
         await getFMSongs()
+        isLiking.value = isLiked(FMInfo[index.value].id, likeIds)
         playIt()
-    }
-}
-// 获取歌曲评论
-const getCommits = async () => {
-    try {
-        normalCommits = reactive([])
-        highCommits = reactive([])
-        const { data } = await getSongCommits({
-            id: FMInfo[index.value].id
-        })
-        data.comments.map(item => {
-            normalCommits.push(item)
-        })
-        data.hotComments.map(item => {
-            highCommits.push(item)
-        })
-        total.value = data.total
-    } catch (error) {
-        ElMessage.error(error);
     }
 }
 
@@ -272,12 +271,8 @@ watch(route, (val) => {
                     width: 60px;
                     height: 60px;
                     border-radius: 50%;
-                    border: 1px solid var(--click-enable-color);
+                    border: 2px solid var(--click-enable-color);
                     cursor: pointer;
-                }
-
-                button:hover {
-                    background: rgba(255, 255, 255, 0.5);
                 }
             }
         }
@@ -322,22 +317,23 @@ watch(route, (val) => {
     }
 
     .bottom {
-        width: 100%;
-        height: 900px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        width: 80%;
+        margin: 0 auto;
 
         .sendCommit_Box {
-            width: 80%;
+            border-radius: 10px;
+            width: 100%;
             height: 200px;
-            display: flex;
-            flex-direction: column;
             padding-bottom: 20px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            overflow: hidden;
+
 
             .title {
                 font-size: 20px;
                 font-weight: 700;
+                padding: 10px 0;
 
                 .ds {
                     font-size: 14px;
@@ -346,14 +342,52 @@ watch(route, (val) => {
                 }
             }
 
-            .input_box {}
+            .input_box {
+                width: 100%;
+                height: 100%;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+                background-color: var(--bg-color-global);
+
+
+
+                .commentBtn {
+                    border-radius: 5px;
+                    position: absolute;
+                    bottom: 40px;
+                    right: 20px;
+                    padding: 5px 10px;
+                    background-color: var(--click-enable-color);
+                    color: var(--inner-body-color);
+                    transition: all .3s;
+                    cursor: pointer;
+
+                    &:active {
+                        background-color: var(--siderbar-active-color);
+                    }
+                }
+
+                .commentText {
+                    box-sizing: border-box;
+                    width: 100%;
+                    border: none;
+                    outline: none;
+                    font-size: 16px;
+                    font-family: inherit;
+                    padding: 10px 20px;
+                    background-color: var(--bg-color-global);
+                    color: var(--font-color-global);
+                }
+
+                textarea {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
         }
 
-        .normal_commit_box,
-        .high_commit_Box {
-            width: 80%;
-            padding-bottom: 75px;
-        }
+
     }
 }
 </style>
