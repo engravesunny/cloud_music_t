@@ -3,7 +3,8 @@
         <h3>
             <div class="title">精彩评论</div>
         </h3>
-        <commitCell v-for="item in highComments" :key="item.commentId" :comment="item"></commitCell>
+        <commitCell :songId="FMInfo[index].id" v-for="item in highComments" :key="item.commentId" :comment="item">
+        </commitCell>
     </div>
 
     <div class="normal_commit_box">
@@ -11,7 +12,8 @@
             <div class="title" ref="newHead">最新评论</div>
         </h3>
         <div v-loading="!normalComments.length" style="width: 100%;min-height: 500px;">
-            <commitCell v-for="item in normalComments" :key="item.commentId" :comment="item"></commitCell>
+            <commitCell :songId="FMInfo[index].id" v-for="item in normalComments" :key="item.commentId" :comment="item">
+            </commitCell>
         </div>
         <pageDivision @changePage="changePage" :pageSize="limit" :curPage="curPage" :total="total"></pageDivision>
     </div>
@@ -24,7 +26,8 @@ import { getCommits, limit } from '../utils/getComments'
 
 const props = defineProps<{
     FMInfo: any[],
-    index: number
+    index: number,
+    updateFlag: number
 }>()
 const emits = defineEmits(['updateTotal'])
 
@@ -79,6 +82,13 @@ watch(() => props.index, () => {
 }, {
     deep: true,
 })
+watch(() => props.updateFlag, () => {
+    if (props.updateFlag) {
+        curPage.value = 0;
+        updateComments();
+    }
+})
+
 
 
 </script>

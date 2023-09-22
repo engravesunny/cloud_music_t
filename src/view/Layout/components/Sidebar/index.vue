@@ -107,6 +107,9 @@ onMounted(async () => {
     const { data } = await getUserSongList({
         uid: userInfo.value.id
     })
+    if (data.playlist.length === 1) {
+        return;
+    }
     data?.playlist?.map(item => {
         if (item.creator.nickname === userInfo.value.nickname) {
             createSongList.push(item)

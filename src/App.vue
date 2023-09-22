@@ -1,16 +1,19 @@
 <template>
-    <router-view></router-view>
+  <router-view></router-view>
 </template>
 
+
 <style>
-*{
+* {
   margin: 0;
   padding: 0;
 }
-a{
+
+a {
   text-decoration: none;
 }
-ul{
+
+ul {
   list-style: none;
 }
 </style>

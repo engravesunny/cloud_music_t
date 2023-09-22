@@ -47,6 +47,7 @@ const playSong = async (song) => {
         id: song.id
     })
     songInfo.value.songUrl = data.data[0].url
+
     // 当前底部播放栏状态存入本地存储 使其持久化
     localStorage.setItem('PLAYING_STATE', JSON.stringify(songInfo.value))
 }

@@ -57,7 +57,8 @@
                 <!-- 发送评论 -->
 
                 <!-- 歌曲评论 -->
-                <normal-commit @update-total="updateTotal" :FMInfo="FMInfo" :index="index"></normal-commit>
+                <normal-commit @update-total="updateTotal" :update-flag="updateFlag" :FMInfo="FMInfo"
+                    :index="index"></normal-commit>
                 <!-- 歌曲评论 -->
             </div>
             <!-- 底部评论内容 -->
@@ -78,6 +79,7 @@ import { privateFM } from '@/api/myFavourite'
 import mulArShow from '../../utils/mulArShow';
 import { sendComment } from '@/api/songList.js'
 
+const updateFlag = ref(0)
 
 const scrollbar = ref()
 provide('scrollbar', scrollbar);
@@ -85,18 +87,23 @@ provide('scrollbar', scrollbar);
 const commentText = ref('')
 const handleSendComment = async () => {
     try {
+        // 请求发送接口
         const { data } = await sendComment({
             id: FMInfo[index.value].id,
             type: 0,
             t: 1,
             content: commentText.value
         })
+        // 判断发送状态
         if (data.code === 200) {
             ElMessage.success('发送成功')
+            // 评论内容置空
+            commentText.value = ''
         } else {
             ElMessage.error('发送失败')
         }
-        commentText.value = ''
+        // 刷新评论列表
+        updateFlag.value = updateFlag.value + 1;
     } catch (error) {
         ElMessage.error('内部错误')
     }
@@ -203,6 +210,9 @@ const init = async () => {
 onMounted(() => {
     init();
 })
+onBeforeUnmount(() => {
+    FMMode(false)
+})
 
 // 进入非FM页面时关闭FM模式
 watch(route, (val) => {
@@ -273,6 +283,7 @@ watch(route, (val) => {
                     border-radius: 50%;
                     border: 2px solid var(--click-enable-color);
                     cursor: pointer;
+                    background-color: var(--suggest-bg-color);
                 }
             }
         }

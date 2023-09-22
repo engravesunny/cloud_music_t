@@ -131,6 +131,7 @@ onMounted(() => {
     init();
 })
 
+
 </script>
 
 <style lang="less" scoped>
@@ -164,7 +165,7 @@ onMounted(() => {
                 font-size: 14px;
                 text-align: center;
                 margin-bottom: 20px;
-                border-right: 1px solid rgb(230, 230, 230);
+                border-right: 1px solid var(--font-color-light);
 
                 &:hover {
                     color: var(--click-enable-color);

@@ -89,7 +89,7 @@ const { userInfo } = storeToRefs(userStore)
 // 分割多歌手工具
 const mulArShow = mulArShows
 
-let songState = reactive({})
+let songState = songInfo.value
 
 watch(() => songInfo.value, (val) => {
     songState = songInfo.value
@@ -97,15 +97,6 @@ watch(() => songInfo.value, (val) => {
     deep: true,
     immediate: true
 })
-
-if (songInfo.value.currentPlayingSong) {
-    songState = songInfo.value
-} else {
-    if (localStorage.getItem('PLAYING_STATE')) {
-        songInfo.value = JSON.parse(localStorage.getItem('PLAYING_STATE'))
-    }
-    songState = songInfo.value
-}
 
 const route = useRoute()
 const router = useRouter()

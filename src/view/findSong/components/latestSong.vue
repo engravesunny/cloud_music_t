@@ -21,7 +21,8 @@
                                     col.id + 1 }}</div>
                             <div class="index iconfont" v-else>&#xe62e;</div>
                             <div class="img">
-                                <el-image :src="col.content.album.picUrl" class="opacity" @load="handleLoad" />
+                                <el-image :src="col.content.album.picUrl + '?params=60y60'" class="opacity"
+                                    @load="handleLoad" />
                                 <div class="playBtn iconfont" @click="handlePlayClick(col.content)">&#xe87c;</div>
                             </div>
                             <div class="name">{{ col.content.name }}</div>
@@ -122,6 +123,8 @@ const handlePlayClick = async (item: any) => {
 onMounted(() => {
     init();
 })
+
+
 
 
 </script>

@@ -9,7 +9,6 @@ const { songInfo } = storeToRefs(songStore)
 
 // songUrl:歌曲url
 const createAudio = (songUrl) => {
-
     // 如果已有audio标签，就删除它
     const audios = document.querySelectorAll('audio')
     if (audios) {

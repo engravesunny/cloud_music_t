@@ -36,7 +36,7 @@
                 <div class="rest_info">
 
                     <!-- 歌曲总数 -->
-                    <div class="songs_total iconfont">&#xea86; {{ songList_info[0].trackCount }}</div>
+                    <div class="songs_total iconfont">&#xea86; {{ songList_info[0].trackCount + 1 }}</div>
                     <!-- 歌曲总数 -->
 
                     <!-- 播放量 -->
@@ -47,8 +47,7 @@
 
                 <!-- 播放全部按钮 -->
                 <div class="playall_btn">
-                    <el-button @click="playAllFn" class="iconfont btn" type="primary"
-                        style="background:var(--click-enable-color)">&#xe87c;</el-button>
+                    <el-button @click="playAllFn" class="iconfont btn" type="primary">&#xe87c;</el-button>
                     <div class="addList iconfont" @click="addAllList">&#xe86a;</div>
                 </div>
                 <!-- 播放全部按钮 -->
@@ -87,25 +86,19 @@ let finished = ref(false)
 const observerDom = ref(null);
 
 let playAllFn = async () => {
-    ElMessage('正在加载全部歌曲')
+    ElNotification("正在加载歌曲喵")
     const res = await getSongListAllSong({
         id: props.songListInfo[0]?.id
     })
-    ElMessage({
-        type: 'success',
-        message: '加载成功'
-    })
+    ElNotification.success('加载成功喵')
     playAll(res.data?.songs)
 }
 const addAllList = async () => {
-    ElMessage('正在加载全部歌曲')
+    ElNotification("正在加载歌曲喵")
     const res = await getSongListAllSong({
         id: props.songListInfo[0]?.id
     })
-    ElMessage({
-        type: 'success',
-        message: '添加成功'
-    })
+    ElNotification.success(`成功添加了${res.data.songs.length}首喵`)
     addList(res.data?.songs)
 }
 const load = async () => {
@@ -153,6 +146,7 @@ watch(props, async (val) => {
     offset.value = 0
     isMounted.value = false
     loading.value = true
+    finished.value = false
     songList.length = 0;
     const res = await getSongListAllSong({
         id: val?.songListInfo[0]?.id,
@@ -257,11 +251,19 @@ watch(props, async (val) => {
                     height: 60px;
                     border-radius: 100%;
                     font-size: 30px;
-                    transition: all .3s;
+                    transition: all .1s;
+                    background-color: var(--suggest-bg-color);
+                    color: var(--click-enable-color);
+                    border-width: 2px;
+                    border-color: var(--click-enable-color);
                 }
 
                 .btn:hover {
-                    transform: scale(1.1);
+                    transform: scale(1.04);
+                }
+
+                .btn:active {
+                    transform: scale(1.0);
                 }
 
                 .addList {

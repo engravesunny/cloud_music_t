@@ -12,8 +12,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <el-button @click="playAll(songList)" style="background:var(--click-enable-color)" type="primary" round
-                    class="iconfont">&#xe87c; 播放全部</el-button>
+                <el-button @click="playAll(songList)" type="primary" round class="iconfont btn">&#xe87c; 播放全部</el-button>
             </div>
         </div>
         &nbsp;
@@ -85,6 +84,12 @@ onMounted(async () => {
 
     .bottom {
         margin-left: 55px;
+
+        .btn {
+            background-color: var(--suggest-bg-color);
+            color: var(--click-enable-color);
+            border-color: var(--click-enable-color);
+        }
     }
 }
 </style>

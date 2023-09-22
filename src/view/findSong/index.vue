@@ -26,6 +26,7 @@ import swiper from './components/swiper.vue';
 import { getHotBanner } from '@/api/songList'
 import { onBeforeMount, provide } from 'vue';
 
+const PersonalRec1 = () => import('./components/PersonalRec.vue')
 
 const scrollRef = ref();
 provide('scrollbar', scrollRef)
@@ -44,6 +45,7 @@ const changeNav = (component) => {
     activeComponent.value = tabs[component]
 }
 let bannerList = reactive([])
+
 onBeforeMount(async () => {
     // 获取轮播图
     const { data } = await getHotBanner({

@@ -3,7 +3,7 @@
     <div class="suggest-list">
         <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="custMizedList" :item-height="250" :top-height="180">
             <template #item="{ item, col }">
-                <img-card :item="col.content" :closeIcon="false" :isSingerList="false"></img-card>
+                <img-card :item.async="col.content" :closeIcon="false" :isSingerList="false"></img-card>
             </template>
         </virtual-list>
     </div>
@@ -14,12 +14,9 @@
 import imgCard from './imgCard.vue'
 import virtualList from '@/components/virtualListDev/index.vue'
 import { search } from "@/api/search";
-import { onBeforeMount, onMounted } from "vue";
-import suggestlist from "./suggestlist.vue";
+import { onMounted } from "vue";
 import { ElMessage } from "element-plus";
 
-const imgCardRef = ref()
-const pageEnd = ref();
 let custMizedList = reactive([]);
 const curPage = ref(0);
 const limit = ref(30);
@@ -84,6 +81,7 @@ const init = async () => {
 onMounted(() => {
     init();
 })
+
 
 </script>
 

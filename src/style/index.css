@@ -59,3 +59,18 @@ body {
     background-position: 0 50%;
   }
 }
+
+.animate_show {
+  animation: animate_show;
+  animation-duration: .5s;
+}
+
+@keyframes animate_show {
+  0% {
+    filter: blur(10px);
+  }
+
+  100% {
+    filter: unset;
+  }
+}

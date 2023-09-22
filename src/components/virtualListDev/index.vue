@@ -10,12 +10,12 @@
                 </div>
             </div>
         </div>
+
     </div>
     <div ref="contentRef" class="virtual-list-content"></div>
 </template>
 
 <script setup lang="ts">
-import { ElNotification } from 'element-plus';
 
 const emits = defineEmits(['getMoreData'])
 const props = defineProps<{
@@ -27,6 +27,7 @@ const props = defineProps<{
     dataSource: any[],
     cols: number
 }>();
+const cols = ref(props.cols)
 
 const contentRef = ref<HTMLElement>()
 const scrollbar = inject('scrollbar') as any;
@@ -48,9 +49,9 @@ let mockData = computed((): Rows[] => {
     const res: Rows[] = [];
     let tempList: Item[] = [];
     for (let i = 0; i < len; i++) {
-        if (i % props.cols === 0 && i !== 0) {
+        if (i % cols.value === 0 && i !== 0) {
             res.push({
-                id: i / props.cols,
+                id: i / cols.value,
                 cols: tempList
             })
             tempList = [];
@@ -61,7 +62,7 @@ let mockData = computed((): Rows[] => {
         })
     }
     res.push({
-        id: Math.ceil(len / props.cols),
+        id: Math.ceil(len / cols.value),
         cols: tempList
     })
     return res;
@@ -102,9 +103,34 @@ const listenScroll = () => {
     const el = scrollbar.value.wrapRef as HTMLElement
     el.addEventListener('scroll', throttled(handleScroll, 100))
 }
+// 节流函数
+const throttle = function (fn: Function, delay: number) {
+    let timer: any = null;
+    return function (...args: any[]) {
+        if (timer) return;
+        timer = setTimeout(() => {
+            fn.apply({}, args);
+            timer = null;
+        }, delay)
+    }
+}
+// 窗口大小变化处理
+const handleResize = () => {
+    const width = window.innerWidth;
+    if (width > 1500) {
+        cols.value = 6
+    } else {
+        cols.value = 5
+    }
+}
+// 监听窗口变化做响应式处理
+const listenResize = () => {
+    window.onresize = throttle(handleResize, 100)
+}
 
 // 初始化
 onMounted(() => {
+    listenResize();
     listenScroll();
 })
 onActivated(() => {
@@ -147,13 +173,21 @@ onBeforeUnmount(() => {
     }
 
     &-rows {
+        @media screen and (min-width:1600px) {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+        }
+
+        max-width: 1680px;
         width: 100%;
         margin-bottom: 10px;
-        max-width: 1260px;
         height: 250px;
         box-sizing: border-box;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+
+
         column-gap: 5%;
     }
 

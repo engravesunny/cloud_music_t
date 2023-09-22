@@ -31,7 +31,7 @@ const songStore = song()
 
 let { songInfo } = storeToRefs(songStore)
 let songList = reactive({})
-const songInfoLocal = JSON.parse(localStorage.getItem('PLAYING_STATE'))
+const songInfoLocal = songInfo.value
 if (songInfoLocal) {
     songList = reactive(songInfoLocal.songList)
 }
@@ -106,7 +106,7 @@ const deleteAllSongs = () => {
     padding: 25px 0 0px 15px;
     width: 450px;
     height: 500px;
-    background: rgba(223, 183, 207, 0.8);
+    background: var(--suggest-bg-color);
     position: fixed;
     bottom: 75px;
     right: 0;
@@ -118,18 +118,17 @@ const deleteAllSongs = () => {
         width: 90%;
         padding-left: 10px;
         padding-bottom: 20px;
-        color: #000;
         display: flex;
         align-items: center;
         justify-content: space-between;
 
         .clear {
-            color: rgb(71, 77, 77);
+            color: var(--font-color-light);
             cursor: pointer;
         }
 
         .clear:hover {
-            color: aqua;
+            color: var(--font-color-global);
         }
     }
 
@@ -138,10 +137,10 @@ const deleteAllSongs = () => {
             box-sizing: border-box;
             padding-left: 10px;
             height: 40px;
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--song-li-color);
             margin: 10px;
             border-radius: 20px;
-            color: #000;
+            color: var(--font-color-global);
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -179,12 +178,13 @@ const deleteAllSongs = () => {
         }
 
         li:nth-child(2n) {
-            background-color: #fff;
+            background-color: var(--bg-color-global);
         }
 
         li:hover {
-            background-color: #f2f2f3;
+            background-color: var(--siderbar-active-color);
         }
     }
 
-}</style>
+}
+</style>

@@ -96,6 +96,8 @@ onBeforeMount(async () => {
     await getAllRankList();
 })
 
+
+
 </script>
 
 <style lang="less" scoped>

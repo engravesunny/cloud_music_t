@@ -1,37 +1,40 @@
 <template>
     <div class="login_box">
-        <el-card>
-            <div class="login_container">
+        <div class="login_container">
+            <!-- 关闭按钮 -->
+            <div class="closeBtn iconfont">&#xe903;</div>
+            <!-- 关闭按钮 -->
 
-                <!-- 登录logo -->
-                <div class="login_logo">
-                    <img v-if="userInfos.user_avatar" :src="userInfos.user_avatar" alt="">
-                    <img v-else src="@/assets/img/logo.png" alt="">
-                </div>
-                <!-- 登录logo -->
-
-                <!-- 登录标题 -->
-                <div class="login_title">
-                    <h3>欢迎回来{{ userInfos.user_name ? '，' + userInfos.user_name : "" }}</h3>
-                </div>
-                <!-- 登录标题 -->
-
-                <!-- 登录二维码 -->
-
-                <!-- 二维码图片 -->
-                <div class="qrImg">
-                    <img :src="qrurl" alt="">
-                </div>
-                <!-- 二维码图片 -->
-
-                <!-- 登录二维码状态 -->
-                <div class="qrStatus">{{ qrStatus }}</div>
-                <!-- 登录二维码状态 -->
-
-                <!-- 登录二维码 -->
-
+            <!-- 登录logo -->
+            <div class="login_logo">
+                <img v-if="userInfos.user_avatar" :src="userInfos.user_avatar" alt="">
+                <img v-else src="@/assets/img/logo.png" alt="">
             </div>
-        </el-card>
+            <!-- 登录logo -->
+
+            <!-- 登录标题 -->
+            <div class="login_title">
+                <h3>欢迎回来{{ userInfos.user_name ? '，' + userInfos.user_name : "" }}</h3>
+            </div>
+            <!-- 登录标题 -->
+
+            <!-- 登录二维码 -->
+
+            <!-- 二维码图片 -->
+            <div class="qrImg">
+                <img :src="qrurl" alt="">
+            </div>
+            <!-- 二维码图片 -->
+
+            <!-- 登录二维码状态 -->
+            <div class="qrStatus">{{ qrStatus }}</div>
+            <!-- 登录二维码状态 -->
+
+            <!-- 登录二维码 -->
+
+            <div class="bottom" @click="handleVisitorLogin">游客登录</div>
+
+        </div>
     </div>
 </template>
 
@@ -42,7 +45,7 @@ import 'element-plus/theme-chalk/el-message-box.css';
 import 'element-plus/theme-chalk/el-message.css';
 
 //  二维码转图片库
-import { qrKey, qrCreate, qrCheck, getUserInfoDetail } from '@/api/user.js'
+import { visitorLogin, qrKey, qrCreate, qrCheck, getUserInfoDetail } from '@/api/user.js'
 import { onBeforeMount, reactive } from 'vue'
 import QRCode from 'qrcode'
 import { ElMessage } from 'element-plus'
@@ -88,15 +91,14 @@ let qrurl = ref('')
 let qrStatus = ref('')
 
 
-
-// 登录
-onMounted(async () => {
+let qrTimer = null;
+const qrLoginInit = async (flag = true) => {
     const { data } = await qrKey()
     let key = data.data.unikey;
     const res = await qrCreate({ key })
     qrurl.value = await generateQR(res.data.data.qrurl)
     // 循环调用二维码监测接口，直到登录成功
-    let qrTimer = setInterval(async () => {
+    qrTimer = setInterval(async () => {
         const { data } = await qrCheck({ key })
         if (data.code === 800) {
             qrStatus.value = '二维码已过期'
@@ -140,30 +142,80 @@ onMounted(async () => {
             }, 1000)
         }
     }, 2000);
+}
+
+const handleVisitorLogin = async () => {
+    const { data } = await visitorLogin();
+    console.log(data);
+    document.cookie = data.cookie
+    ElMessage({
+        message: '登陆成功',
+        type: 'success'
+    })
+    // 停止二维码轮训
+    clearInterval(qrTimer);
+    qrTimer = null;
+    // 获取用户信息
+    const res = await getUserInfoDetail()
+    console.log(res);
+    // // 添加cookie到token,存入用户信息
+    localStorage.setItem('CLOUD_MUSIC', data.cookie)
+    userInfo.value.nickname = '游客'
+    userInfo.value.avatarUrl = "https://www.kecat.top/other/logo.png"
+    userInfo.value.cookie = data.cookie
+    userInfo.value.id = res.data.account.id
+    localStorage.setItem('userInfo', JSON.stringify({
+        avatarUrl: userInfo.value.avatarUrl,
+        nickname: userInfo.value.nickname,
+        id: userInfo.value.id
+    }))
+    router.go(0)  // 刷新页面
+    clearInterval(qrTimer)
+    const timer = setTimeout(() => {
+        // 更新状态
+        updateStatus(false)
+    }, 1000)
+}
+
+// 登录
+onMounted(async () => {
+    qrLoginInit();
 })
 
 </script>
 
 <style lang="less" scoped>
 .login_box {
+    border-radius: 10px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
     height: 500px;
+    display: flex;
+    justify-content: center;
+    background-color: var(--inner-body-color);
+    box-shadow: 0 0 5px 2px rgba(37, 128, 255, 0.1);
 
     .login_container {
+        position: relative;
         width: 400px;
         height: 500px;
         display: flex;
         flex-wrap: wrap;
         flex-direction: column;
-        justify-content: flex-startx;
+        justify-content: flex-start;
         align-items: center;
 
+        .closeBtn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+        }
+
         .login_logo {
-            margin-left: -30px;
 
             img {
                 border-radius: 50%;
@@ -173,7 +225,7 @@ onMounted(async () => {
         }
 
         .login_title {
-            margin: 40px 0 40px -30px;
+            margin: 40px 0;
 
             h3 {
                 width: 100%;
@@ -184,16 +236,24 @@ onMounted(async () => {
         }
 
         .qrImg {
-            margin-left: -30px;
-
             img {
                 width: 150px;
                 height: 150px;
             }
         }
 
-        .qrStatus {
-            margin-left: -30px;
+        .bottom {
+            margin: 20px 0;
+            color: var(--font-color-light);
+
+            &:hover {
+                cursor: pointer;
+                color: var(--font-color-global);
+            }
+
+            &:active {
+                color: var(--font-color-light);
+            }
         }
     }
 }

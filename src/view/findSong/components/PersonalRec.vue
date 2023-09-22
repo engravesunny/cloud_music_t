@@ -43,7 +43,7 @@
 import { getHighPlayList } from "@/api/songList";
 import { getDailySongs as getPrivate, getSongListAllSong, getDailyList } from '@/api/songList';
 import { getDailySongs as getDaily } from '@/api/myFavourite'
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import playAll from '../../../utils/playAll';

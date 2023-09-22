@@ -1,7 +1,6 @@
 import { ElMessage } from "element-plus";
 import { createRouter, createWebHashHistory } from "vue-router";
 
-
 const routes = [
     {
         path: '/',
@@ -12,7 +11,7 @@ const routes = [
             {
                 path: "/search",
                 name: 'search',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/search/index.vue'),
                 meta: {
                     component: 'Search'
                 }
@@ -20,7 +19,7 @@ const routes = [
             {
                 path: "/findSong",
                 name: 'findSong',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/findSong/index.vue'),
                 meta: {
                     component: 'findSong'
                 }
@@ -28,7 +27,7 @@ const routes = [
             {
                 path: "/myLike",
                 name: 'myLike',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/myLike/index.vue'),
                 meta: {
                     component: 'myLike'
                 }
@@ -36,7 +35,7 @@ const routes = [
             {
                 path: "/suggestSong",
                 name: 'suggestSong',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/suggestSong/index.vue'),
                 meta: {
                     component: 'suggestSong'
                 }
@@ -44,7 +43,7 @@ const routes = [
             {
                 path: "/privateFM",
                 name: 'privateFM',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/privateFM/index.vue'),
                 meta: {
                     component: 'privateFM'
                 }
@@ -52,7 +51,7 @@ const routes = [
             {
                 path: "/songList",
                 name: 'songList',
-                component: () => import('@/view/Home/index.vue'),
+                component: () => import('@/view/songList/index.vue'),
                 meta: {
                     component: 'songList'
                 }
@@ -66,9 +65,10 @@ const router = createRouter({
     routes
 });
 
-const routeNeedToken = ["/myLike", "/suggestSong", "/songList"]
+const routeNeedToken = ["/myLike", "/suggestSong", "/songList", "/privateFM"]
 
 router.beforeEach((to, from, next) => {
+    // 判断是否为需要登录的path
     if (routeNeedToken.indexOf(to.fullPath) > -1) {
         // 未登录
         if (!localStorage.getItem('userInfo')) {

@@ -8,12 +8,10 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCard: typeof import('element-plus/es')['ElCard']
     ElCollapse: typeof import('element-plus/es')['ElCollapse']
     ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElImage: typeof import('element-plus/es')['ElImage']
-    ElInput: typeof import('element-plus/es')['ElInput']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElProgress: typeof import('element-plus/es')['ElProgress']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
@@ -22,7 +20,6 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SingleSong: typeof import('./components/singleSong/index.vue')['default']
     SongListPage: typeof import('./components/songListPage/index.vue')['default']
-    VirtualList: typeof import('./components/virtualList/index.vue')['default']
     VirtualListDev: typeof import('./components/virtualListDev/index.vue')['default']
     VirtualListNews: typeof import('./components/virtualListNews/index.vue')['default']
   }

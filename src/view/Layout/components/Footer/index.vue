@@ -89,6 +89,7 @@ import mulArShow from '../../../../utils/mulArShow';
 // 引入底部播放栏状态信息
 import { song } from '@/store/song.js'
 import { storeToRefs } from 'pinia'
+import { checkSong } from '../../../../api/search';
 const songStore = song()
 let { songInfo } = storeToRefs(songStore)
 
@@ -99,7 +100,7 @@ let isPlaying = ref(false)
 const changePlayingState = () => {
     isPlaying.value = !isPlaying.value
     let audio = document.querySelector('audio')
-    if (audio.paused) {
+    if (audio?.paused) {
         audio.play()
     } else {
         audio.pause()
@@ -107,28 +108,42 @@ const changePlayingState = () => {
 }
 
 // 播放状态暂存
-let songState = reactive({})
-if (songInfo.value.name) {
-    songState = reactive(JSON.parse(localStorage.getItem('PLAYING_STATE')))
-} else {
-    songState = songInfo.value
+let songState = songInfo.value
+
+// 等用户再次来到页面时，读取本地缓存，有缓存就使用缓存，创建audio标签
+let initAudio = () => {
+    if (songInfo.value.songUrl) {
+        // 如果已有audio标签，就删除它
+        const audios = document.querySelectorAll('audio')
+        if (audios) {
+            for (let i = 0; i < audios.length; i++) {
+                audios[i].remove()
+            }
+        }
+        const audio = document.createElement('audio')
+        audio.src = songInfo.value.songUrl
+        audio.volume = songInfo.value.volume / 100
+        audio.style = 'display:none;'
+        document.body.appendChild(audio)
+        audio.addEventListener('play', () => {
+            isPlaying.value = true
+        })
+        audio.addEventListener('pause', () => {
+            isPlaying.value = false
+        })
+        audio.addEventListener('timeupdate', changeTimeFn)
+        // 歌曲结束是的判定函数
+        audio.onended = () => {
+            songEndFn()
+            audio.onended = null
+        }
+    }
 }
 
 // 初始化
-onBeforeMount(() => {
-    if (songInfo.value.name) {
-        let songState = songInfo.value
-    } else {
-        if (localStorage.getItem('PLAYING_STATE')) {
-            songInfo.value = JSON.parse(localStorage.getItem('PLAYING_STATE'))
-        }
-        songState = songInfo.value
-        songInfo.value.FMList = reactive([])
-        songInfo.value.FMMode = false
-    }
-})
 onMounted(() => {
     changeVolume()
+    initAudio();
 })
 
 // 已播放时长
@@ -239,9 +254,7 @@ const beforeSong = () => {
     }
 }
 
-
-// 监听当前播放歌曲url
-watch(() => songInfo.value.songUrl, async (newval) => {
+const updateAudio = (newval) => {
     songState = songInfo.value
     playedTime.value = '00:00'
     playedProgress.value = 0
@@ -259,8 +272,11 @@ watch(() => songInfo.value.songUrl, async (newval) => {
         songEndFn()
         audio.onended = null
     }
+}
 
-
+// 监听当前播放歌曲url
+watch(() => songInfo.value.songUrl, async (newval) => {
+    updateAudio(newval);
 }, {
     deep: true,
     immediate: false

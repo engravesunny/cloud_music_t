@@ -7,6 +7,12 @@ export const phoneLogin = data => request({
     data
 })
 
+// 游客登录
+
+export const visitorLogin = () => request({
+    url: "/register/anonimous"
+})
+
 
 // // 发送验证码
 // export const sendCode = params => request({

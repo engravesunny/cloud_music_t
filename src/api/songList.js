@@ -52,6 +52,12 @@ export const sendComment = (params) => request({
   params
 })
 
+// 评论点赞
+export const toGoodComment = (params) => request({
+  url: "/comment/like",
+  params
+})
+
 // 获取歌单详情
 
 export const getSongListDetail = (params) =>

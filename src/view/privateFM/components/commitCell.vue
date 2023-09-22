@@ -19,9 +19,12 @@
             </div>
             <div class="bottom">
                 <div v-if="comment" class="date">{{ comment.timeStr }}</div>
-                <div v-if="comment" class="goods iconfont">&#xe651;<span class="likeCount">{{ comment.likedCount }}</span>
+                <div v-if="comment && !isLiked" @click="handleClickGood" class="goods iconfont"
+                    :class="{ active: isLiked }">&#xe651;<span class="likeCount">{{
+                        likeCount }}</span>
                 </div>
-                <div v-if="comment && false" class="goods iconfont">&#xec8c;<span class="likeCount">{{ comment.likedCount
+                <div v-else @click="handleClickGood" class="goods iconfont">&#xec8c;<span class="likeCount">{{
+                    likeCount
                 }}</span></div>
             </div>
         </div>
@@ -31,10 +34,57 @@
 </template>
 
 <script setup>
-const props = defineProps(['comment'])
+import { toGoodComment } from '../../../api/songList.js'
+
+const props = defineProps(['comment', 'songId'])
 const opacity = ref(0)
+const isLiked = ref(props.comment?.liked)
+const likeCount = ref(props.comment?.likedCount)
 const handleLoad = () => {
     opacity.value = 1;
+}
+
+// id : 资源 id, 如歌曲 id,mv id
+
+// cid : 评论 id
+
+// t : 是否点赞 , 1 为点赞 ,0 为取消点赞
+
+// type: 0
+const handleClickGood = async () => {
+    try {
+        if (isLiked.value) {
+            // 取消点赞
+            const { data } = await toGoodComment({
+                id: props.songId,
+                cid: props.comment.commentId,
+                t: 0,
+                type: 0
+            })
+            if (data.code !== 200) {
+                ElMessage.error('操作失败')
+            } else {
+                isLiked.value = false;
+                likeCount.value = likeCount.value - 1;
+            }
+        } else {
+            // 点赞
+            const { data } = await toGoodComment({
+                id: props.songId,
+                cid: props.comment.commentId,
+                t: 1,
+                type: 0
+            })
+            if (data.code !== 200) {
+                ElMessage.error('操作失败')
+            } else {
+                isLiked.value = true;
+                likeCount.value = likeCount.value + 1;
+            }
+        }
+    } catch (error) {
+        ElMessage.error('内部错误')
+    }
 }
 </script>
 
@@ -123,7 +173,7 @@ const handleLoad = () => {
 
             .date {
                 font-size: 14px;
-                color: gray;
+                color: var(--font-color-light);
             }
 
             .goods {
@@ -131,7 +181,7 @@ const handleLoad = () => {
                 cursor: pointer;
 
                 .likeCount {
-                    color: rgb(139, 123, 123);
+                    color: var(--font-color-light);
                     font-size: 14px;
                 }
             }

@@ -5,7 +5,7 @@
         </h2>
         <div v-loading="!suggestLists.length" class="playlist_container">
             <ul>
-                <img-card v-for="item in suggestLists" :key="item.id" :item="item" :closeIcon="!!closeIcon"
+                <img-card v-for="item in suggestLists" :key="item.id" :item.async="item" :closeIcon="!!closeIcon"
                     :isSingerList="!!isSingerList | false"></img-card>
             </ul>
         </div>
