@@ -6,8 +6,9 @@
                 <!-- 左侧歌曲封面和操作按钮 -->
                 <div class="options_left">
                     <div class="img">
-                        <el-image style="border-radius:10px;height: 100%;width: 100%;" fit="cover"
-                            :src="FMInfo[index].album.picUrl" alt="img"></el-image>
+                        <el-image @load="opacity = 1" style="border-radius:10px;height: 100%;width: 100%;"
+                            :style="{ opacity }" fit="cover" :src="FMInfo[index].album.picUrl + '?params=100y100'"
+                            alt="img"></el-image>
                         <div class="playbtn"></div>
                     </div>
                     <div class="btn">
@@ -80,7 +81,7 @@ import mulArShow from '../../utils/mulArShow';
 import { sendComment } from '@/api/songList.js'
 
 const updateFlag = ref(0)
-
+const opacity = ref(0)
 const scrollbar = ref()
 provide('scrollbar', scrollbar);
 
@@ -165,6 +166,7 @@ const playIt = async () => {
 }
 // 下一首FM
 const nextFM = async () => {
+    opacity.value = 0;
     index.value = index.value + 1
     if (FMInfo[index.value]) {
         isLiking.value = isLiked(FMInfo[index.value].id, likeIds)
@@ -254,6 +256,11 @@ watch(route, (val) => {
                 margin: 20px;
                 width: 300px;
                 height: 300px;
+                border-radius: 10px;
+                overflow: hidden;
+                background: linear-gradient(-45deg, #F1F2F3 25%, #fff 45%, #F1F2F3 65%);
+                background-size: 400% 100%;
+                animation: skeleton-loading 1.2s ease-in-out infinite;
 
                 img {
                     width: 300px;

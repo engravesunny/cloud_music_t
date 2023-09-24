@@ -26,7 +26,7 @@
                 <li v-for="item in hotCategories" @click="handleSelectCat(item.name)" :key="item.name">{{ item.name }}</li>
             </ul>
         </div>
-        <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="playList" :item-height="250" :top-height="240">
+        <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="playList" :item-height="250" :top-height="180">
             <template #item="{ item, col }">
                 <img-card :item="col.content" :closeIcon="false" :isSingerList="false"></img-card>
             </template>

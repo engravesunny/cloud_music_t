@@ -3,7 +3,7 @@
 
         <!-- 歌曲封面 -->
         <div v-if="songState.picUrl" class="songImg">
-            <img :src="songState.picUrl" alt="">
+            <img :src="songState.picUrl + '?params=80y80'" alt="">
         </div>
         <!-- 歌曲封面 -->
 
@@ -16,14 +16,14 @@
 
         <!-- 上一曲、暂停、下一曲 -->
         <div class="songOption">
-            <div v-if="!songState.FMList.length" class="beforeSong iconfont" @click="beforeSong">
+            <div v-if="!songInfo.FMList.length" class="beforeSong iconfont" @click="beforeSong">
                 <p>&#xe63c;</p>
             </div>
             <div class="pause iconfont" @click="changePlayingState">
                 <span v-if="isPlaying">&#xe87a;</span>
                 <span v-else>&#xe87c;</span>
             </div>
-            <div v-if="!songState.FMList.length" class="nextSong iconfont" @click="SongEnd">
+            <div v-if="!songInfo.FMList.length" class="nextSong iconfont" @click="SongEnd">
                 <p>&#xe63e;</p>
             </div>
         </div>
@@ -280,6 +280,10 @@ watch(() => songInfo.value.songUrl, async (newval) => {
 }, {
     deep: true,
     immediate: false
+})
+
+watch(() => songInfo.value, () => {
+    localStorage.setItem('PLAYING_STATE', songInfo.value)
 })
 </script>
 

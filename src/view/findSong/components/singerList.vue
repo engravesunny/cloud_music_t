@@ -13,7 +13,8 @@
         <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="singerListInfo" :item-height="250"
             :top-height="240">
             <template #item="{ item, col }">
-                <img-card :item="col.content" :closeIcon="true" :isSingerList="true"></img-card>
+                <img-card @click="toSingerPage(col.content)" :item="col.content" :closeIcon="true"
+                    :isSingerList="true"></img-card>
             </template>
         </virtual-list>
     </div>
@@ -23,8 +24,9 @@
 import imgCard from './imgCard.vue'
 import virtualList from '@/components/virtualListDev/index.vue'
 import { onMounted, reactive } from 'vue';
-import suggestlist from './suggestlist.vue';
 import { getSingerCate } from '@/api/singer'
+const router = useRouter();
+
 const active = reactive({
     "语种": '所有', "筛选": '热门', "分类": '全部'
 })
@@ -120,6 +122,19 @@ const handleLoad = async () => {
     if (!finished.value && !loading.value) {
         curPage.value = curPage.value + 1;
         getSingerList();
+    }
+}
+
+const toSingerPage = (context) => {
+    try {
+        router.push({
+            path: '/singer',
+            query: {
+                id: context.id,
+            }
+        })
+    } catch (error) {
+        ElMessage.error(error)
     }
 }
 

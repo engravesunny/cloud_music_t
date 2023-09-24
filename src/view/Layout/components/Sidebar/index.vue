@@ -107,7 +107,7 @@ onMounted(async () => {
     const { data } = await getUserSongList({
         uid: userInfo.value.id
     })
-    if (data.playlist.length === 1) {
+    if (!data.playlist?.length || data.playlist.length === 1) {
         return;
     }
     data?.playlist?.map(item => {

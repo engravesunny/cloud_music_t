@@ -15,7 +15,7 @@ import { PromiseControl } from '../../../plugin/promise'
 const { proxy } = getCurrentInstance() as any;
 import { AxiosResponse } from 'axios';
 import axios from 'axios'
-import { ITEM_RENDER_EVT } from 'element-plus/es/components/virtual-list/src/defaults';
+import { getAlbumContent } from '../../../api/album';
 
 const imgDom = ref();
 
@@ -33,17 +33,27 @@ const router = useRouter()
 const props = defineProps<{
     item: any,
     closeIcon: boolean | number,
-    isSingerList: boolean | number
+    isSingerList: boolean | number,
+    isAlbum?: boolean
 }>()
 let toSongList = (id: any) => {
     if (!props.isSingerList) {
-        router.push({
-            path: '/songlist',
-            query: {
-                songListInfoId: id
-            }
-        })
-    } else {
+        if (!props.isAlbum) {
+            router.push({
+                path: '/songlist',
+                query: {
+                    songListInfoId: id
+                }
+            })
+        } else {
+            router.push({
+                path: '/songlist',
+                query: {
+                    songListInfoId: id,
+                    album: 1
+                }
+            })
+        }
     }
 }
 
@@ -71,11 +81,23 @@ const handleLoad = (flag: boolean) => {
 const xhr = new XMLHttpRequest();
 
 const handlePlayClick = async (item: any) => {
-    const id = item.id;
-    const { data: songList } = await getSongListAllSong({
-        id
-    })
-    playAll(songList.songs)
+    try {
+        if (!props.isAlbum) {
+            const id = item.id;
+            const { data: songList } = await getSongListAllSong({
+                id
+            })
+            playAll(songList.songs)
+        } else {
+            const id = item.id;
+            const { data: songList } = await getAlbumContent({
+                id
+            })
+            playAll(songList.songs)
+        }
+    } catch (error: any) {
+        ElMessage.error(error.message)
+    }
 }
 
 const listenImgDom = () => {
@@ -102,7 +124,7 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
     let url = props.item.picUrl || props.item.coverImgUrl || props.item.img1v1Url
-    url = url + "?param=300y300"
+    url = url + "?param=250y250"
     task = sendRequest(url);
     listenImgDom();
 })

@@ -1,11 +1,11 @@
 <template>
     <div class="songListPage_container unselectable">
         <!-- 歌单信息 -->
-        <div v-loading="loading || !songList_info[0] || !songList_info[0].coverImgUrl" v-if="songList_info[0]"
-            class="songList_Info">
+        <div v-loading="loading || !songList_info[0]" class="songList_Info">
             <!-- 歌单封面（左边） -->
             <div v-if="songList_info[0]" class="list_cover">
-                <img :src="songList_info[0].coverImgUrl" alt="">
+                <img @load="handleLoaded" :style="{ opacity }"
+                    :src="(songList_info[0].coverImgUrl || songList_info[0].picUrl) + '?params=500y500'" alt="">
             </div>
             <!-- 歌单封面（左边） -->
 
@@ -13,40 +13,44 @@
             <div v-loading="!songList_info[0]" class="other_info">
                 <!-- 歌单标题 -->
                 <div v-if="songList_info[0]" class="list_title">
-                    <span>{{ songList_info[0].name }}</span>
+                    <span>{{ songList_info[0]?.name }}</span>
                 </div>
                 <!-- 歌单标题 -->
 
                 <!-- 创建信息 -->
-                <div v-if="songList_info[0].creator" class="found_info">
+                <div v-if="songList_info[0]" class="found_info">
                     <!-- 创建者昵称 -->
                     <div class="createAvatar">
-                        <img :src="songList_info[0].creator.avatarUrl" alt="">
+                        <img :src="(songList_info[0]?.creator?.avatarUrl || songList_info[0]?.artist?.img1v1Url) + '?params=100y100'"
+                            alt="creator">
                     </div>
-                    <div class="found_name">{{ songList_info[0].creator.nickname }}</div>
+                    <div class="found_name">{{ songList_info[0]?.creator?.nickname || songList_info[0]?.artist?.name }}
+                    </div>
                     <!-- 创建者昵称 -->
 
                     <!-- 创建日期 -->
-                    <div class="found_date">{{ formatDate(songList_info[0].createTime) + '创建' }}</div>
+                    <div class="found_date">{{ formatDate(songList_info[0]?.createTime || songList_info[0]?.publishTime) +
+                        '创建' }}</div>
                     <!-- 创建日期 -->
                 </div>
                 <!-- 创建信息 -->
 
                 <!-- 其他信息 -->
-                <div class="rest_info">
+                <div v-if="songList_info[0]" class="rest_info">
 
                     <!-- 歌曲总数 -->
-                    <div class="songs_total iconfont">&#xea86; {{ songList_info[0].trackCount + 1 }}</div>
+                    <div class="songs_total iconfont">&#xea86; {{ (songList_info[0].trackCount + 1) || albumSongList.length
+                    }}</div>
                     <!-- 歌曲总数 -->
 
                     <!-- 播放量 -->
-                    <div class="songs_playtotal iconfont">&#xe600; {{ songList_info[0].playCount }}</div>
+                    <div class="songs_playtotal iconfont">&#xe600; {{ songList_info[0].playCount || '' }}</div>
                     <!-- 播放量 -->
                 </div>
                 <!-- 其他信息 -->
 
                 <!-- 播放全部按钮 -->
-                <div class="playall_btn">
+                <div v-if="songList_info[0]" class="playall_btn">
                     <el-button @click="playAllFn" class="iconfont btn" type="primary">&#xe87c;</el-button>
                     <div class="addList iconfont" @click="addAllList">&#xe86a;</div>
                 </div>
@@ -58,12 +62,12 @@
         <!-- 歌单信息 -->
 
         <!-- 歌曲列表 -->
-        <singleSong v-if="songList.length" v-loading="!songList.length" :songTotal="0" :current-pages="0"
-            :result="songList"></singleSong>
+        <singleSong v-if="songList.length || albumSongList.length" v-loading="!songList.length && !albumSongList.length"
+            :songTotal="0" :current-pages="0" :result="albumSongList.length ? albumSongList : songList"></singleSong>
         <!-- 歌曲列表 -->
         <!-- 加载状态 -->
-        <p class="loading" v-if="isloading">Loading...</p>
-        <p class="loading" v-if="finished">已经没有了哦</p>
+        <p class="loading" v-if="isloading && !albumSongList.length">Loading...</p>
+        <p class="loading" v-if="finished || albumSongList.length">已经没有了哦</p>
         <div ref="observerDom"></div>
     </div>
 </template>
@@ -75,7 +79,23 @@ import formatDate from '@/utils/formatDate.js';
 import singleSong from '../singleSong/index.vue'
 import { getSongListAllSong } from '@/api/songList.js'
 import { onMounted } from 'vue';
-const props = defineProps(['songListInfo'])
+const props = defineProps({
+    songListInfo: {
+        type: Array,
+        default: []
+    },
+    albumSongList: {
+        type: Array,
+        default: []
+    }
+})
+
+const opacity = ref(0)
+const handleLoaded = () => {
+    opacity.value = 1;
+    console.log(opacity.value);
+}
+
 let timer = null
 let loading = ref(true)
 let songList = reactive([])
@@ -86,40 +106,68 @@ let finished = ref(false)
 const observerDom = ref(null);
 
 let playAllFn = async () => {
-    ElNotification("正在加载歌曲喵")
-    const res = await getSongListAllSong({
-        id: props.songListInfo[0]?.id
-    })
-    ElNotification.success('加载成功喵')
-    playAll(res.data?.songs)
+    try {
+        ElNotification("正在加载歌曲喵")
+        if (props.albumSongList.length) {
+            ElNotification.success('加载成功喵')
+            playAll(props.albumSongList)
+        } else {
+            const res = await getSongListAllSong({
+                id: props.songListInfo[0]?.id
+            })
+            ElNotification.success('加载成功喵')
+            playAll(res.data?.songs)
+        }
+    } catch (error) {
+        ElMessage.error(error.message)
+    }
 }
 const addAllList = async () => {
-    ElNotification("正在加载歌曲喵")
-    const res = await getSongListAllSong({
-        id: props.songListInfo[0]?.id
-    })
-    ElNotification.success(`成功添加了${res.data.songs.length}首喵`)
-    addList(res.data?.songs)
+    try {
+        ElNotification("正在加载歌曲喵")
+        if (props.albumSongList.length) {
+            ElNotification.success('加载成功喵')
+            addAllList(props.albumSongList)
+        } else {
+            const res = await getSongListAllSong({
+                id: props.songListInfo[0]?.id
+            })
+            ElNotification.success('加载成功喵')
+            addAllList(res.data?.songs)
+        }
+    } catch (error) {
+        ElMessage.error(error.message)
+    }
 }
 const load = async () => {
-    if (finished.value) return
-    if (!isMounted.value) return
-    isloading.value = true
-    offset.value = offset.value + 1
-    const res = await getSongListAllSong({
-        id: props.songListInfo[0]?.id,
-        limit: 50,
-        offset: offset.value * 50
-    })
-    if (res.data?.songs?.length === 0 && isMounted.value) {
-        finished.value = true
-        isloading.value = false
-        return
+    try {
+        if (!props.albumSongList.length) {
+            if (finished.value) return
+            if (!isMounted.value) return
+            isloading.value = true
+            offset.value = offset.value + 1
+            const res = await getSongListAllSong({
+                id: props.songListInfo[0]?.id,
+                limit: 50,
+                offset: offset.value * 50
+            })
+            if (res.data?.songs?.length === 0 && isMounted.value) {
+                finished.value = true
+                isloading.value = false
+                return
+            }
+            res.data?.songs?.map(item => {
+                songList.push(item)
+            })
+            isloading.value = false
+        } else {
+            finished.value = true;
+            loading.value = false;
+            return;
+        }
+    } catch (error) {
+        console.log(error.message);
     }
-    res.data?.songs?.map(item => {
-        songList.push(item)
-    })
-    isloading.value = false
 }
 
 const obserserListen = () => {
@@ -128,38 +176,41 @@ const obserserListen = () => {
         entrys.forEach((entry) => {
             if (entry.isIntersecting) {
                 load();
+                if (finished.value) {
+                    observer.unobserve(dom)
+                }
             }
         })
     })
     observer.observe(dom);
 }
-
-
 let songList_info = reactive([])
-
 onMounted(() => {
     obserserListen();
 })
-
-
-watch(props, async (val) => {
-    offset.value = 0
-    isMounted.value = false
-    loading.value = true
-    finished.value = false
-    songList.length = 0;
-    const res = await getSongListAllSong({
-        id: val?.songListInfo[0]?.id,
-        limit: 50,
-        offset: offset.value * 100
-    })
-    songList_info.pop()
-    songList_info.push(val.songListInfo[0])
-    res.data?.songs?.map(item => {
-        songList.push(item)
-    })
-    loading.value = false
-    isMounted.value = true
+watch(() => props.songListInfo, async (val) => {
+    try {
+        opacity.value = 0
+        offset.value = 0
+        isMounted.value = false
+        loading.value = true
+        finished.value = false
+        songList.length = 0;
+        const res = await getSongListAllSong({
+            id: val[0].id,
+            limit: 50,
+            offset: offset.value * 100
+        })
+        songList_info.pop()
+        songList_info.push(val[0])
+        res.data?.songs?.map(item => {
+            songList.push(item)
+        })
+        loading.value = false
+        isMounted.value = true
+    } catch (error) {
+        console.log(error.message);
+    }
 }, {
     deep: true,
     immediate: false
@@ -187,6 +238,9 @@ watch(props, async (val) => {
             height: 200px;
             border-radius: 25px;
             overflow: hidden;
+            background: linear-gradient(-45deg, #F1F2F3 25%, #fff 45%, #F1F2F3 65%);
+            background-size: 400% 100%;
+            animation: skeleton-loading 1.2s ease-in-out infinite;
 
             img {
                 width: 200px;

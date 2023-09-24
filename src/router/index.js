@@ -1,5 +1,11 @@
 import { ElMessage } from "element-plus";
 import { createRouter, createWebHashHistory } from "vue-router";
+import { visitorLogin, logout } from "../api/user";
+import { user } from '../store/user'
+import { song } from "../store/song";
+import pinia from "../store";
+const { userInfo } = user(pinia);
+const { songInfo } = song(pinia);
 
 const routes = [
     {
@@ -22,6 +28,18 @@ const routes = [
                 component: () => import('@/view/findSong/index.vue'),
                 meta: {
                     component: 'findSong'
+                },
+                beforeEnter: async (to, from, next) => {
+                    if (!userInfo.cookie) {
+                        await visitorLogin();
+                        const { data } = await logout()
+                        if (data.code === 200) {
+                            localStorage.removeItem('userInfo')
+                            localStorage.removeItem('CLOUD_MUSIC')
+                            user().reset();
+                        }
+                    }
+                    next();
                 }
             },
             {
@@ -56,6 +74,14 @@ const routes = [
                     component: 'songList'
                 }
             },
+            {
+                path: '/singer',
+                name: 'singer',
+                component: () => import('@/view/singerPage/index.vue'),
+                meta: {
+                    component: 'sigerPage'
+                }
+            }
         ]
     }
 ];
@@ -68,6 +94,11 @@ const router = createRouter({
 const routeNeedToken = ["/myLike", "/suggestSong", "/songList", "/privateFM"]
 
 router.beforeEach((to, from, next) => {
+    if (to.path !== '/privateFM') {
+        console.log(songInfo);
+        songInfo.FMMode = false
+        songInfo.FMList = []
+    }
     // 判断是否为需要登录的path
     if (routeNeedToken.indexOf(to.fullPath) > -1) {
         // 未登录

@@ -70,7 +70,8 @@ let mockData = computed((): Rows[] => {
 
 const endIndex = computed(() => {
     const viewHeight = contentRef.value?.offsetHeight ? contentRef.value.offsetHeight : 0;
-    return Math.min(mockData.value.length, startIndex.value + Math.ceil((viewHeight / props.itemHeight)) + 1);
+    const res = Math.min(mockData.value.length, startIndex.value + Math.ceil((viewHeight / props.itemHeight)) + 1);
+    return res < 2 ? 2 : res;
 })
 const renderList = computed(() => {
     return mockData.value.slice(startIndex.value, endIndex.value)
@@ -117,7 +118,7 @@ const throttle = function (fn: Function, delay: number) {
 // 窗口大小变化处理
 const handleResize = () => {
     const width = window.innerWidth;
-    if (width > 1500) {
+    if (width > 1600) {
         cols.value = 6
     } else {
         cols.value = 5
@@ -132,6 +133,7 @@ const listenResize = () => {
 onMounted(() => {
     listenResize();
     listenScroll();
+    handleResize();
 })
 onActivated(() => {
     scrollbar.value.handleScroll();

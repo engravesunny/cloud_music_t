@@ -22,15 +22,18 @@
         <!-- 搜索建议区域 -->
         <div v-if="showSuggest" @click="showSuggest = false" style="width:100vw;height:100vh;position:fixed;top:0;left:0;">
             <div v-if="showSuggest" class="suggest">
-                <div class="suggest_title">猜你想搜</div>
+                <div class="suggest_title" v-if="suggestList.length || !suggestList.length && showSuggest && !searchText">
+                    猜你想搜</div>
                 <ul v-if="suggestList.length && showSuggest && searchText">
-                    <li class="suggest_cell" v-for="item in suggestList" :key="item.id" @click="suggestSearch(item.name)">
+                    <li class="suggest_cell shenglue" v-for="item in suggestList" :key="item.id"
+                        @click="suggestSearch(item.name)">
                         {{ item.name }}{{ item.artists.length ? ' - ' : '' }}
                         <span v-for="artist in item.artists" :key="artist.id">{{ artist.name + ' ' }}</span>
                     </li>
                 </ul>
-                <ul v-if="!suggestList.length && showSuggest">
-                    <li class="suggest_cell" v-for="item in hotSong" :key="item.first" @click="suggestSearch(item.first)">
+                <ul v-if="!suggestList.length && showSuggest && !searchText">
+                    <li class="suggest_cell shenglue" v-for="item in hotSong" :key="item.first"
+                        @click="suggestSearch(item.first)">
                         {{ item.first }}
                     </li>
                 </ul>
@@ -92,8 +95,20 @@ let suggestList = reactive([])
 
 let timer = null
 
+// 防抖
+const debounce = (fn, delay) => {
+    let timer = null;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = null;
+        timer = setTimeout(() => {
+            fn.apply({}, args)
+        }, delay);
+    }
+}
+
 // 搜索建议input事件
-let searchSuggestFn = async () => {
+let Fn = async () => {
     // 显示suggest列表
     showSuggest.value = true
 
@@ -116,6 +131,7 @@ let searchSuggestFn = async () => {
         }
     }, 200);
 }
+const searchSuggestFn = debounce(Fn, 300);
 
 // 点击搜索建议搜索
 let suggestSearch = async (name) => {
@@ -189,11 +205,11 @@ let suggestSearch = async (name) => {
         }
 
         .suggest_cell {
-            padding-left: 20px;
+            padding: 10px 20px;
             box-sizing: border-box;
             width: 100%;
             height: 30px;
-            line-height: 30px;
+            line-height: 10px;
         }
 
         .suggest_cell:hover {

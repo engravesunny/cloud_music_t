@@ -20,7 +20,7 @@ export const getUserSongList = params => request({
 
 // 每日推荐歌曲
 
-export const getDailySongs = params => request({
+export const getDailySongs = () => request({
     url: '/recommend/songs'
 })
 

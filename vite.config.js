@@ -15,7 +15,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'https://kecat.top:3000/',
+        target: 'http://kecat.top:3000/',
         // target就是你要访问的目标地址，可以是基础地址，这样方便在这个网站的其他api口调用数据
         ws: true,
         changeOrigin: true,

@@ -10,7 +10,7 @@
                     </div>
 
                     <div class="left-img" fit="cover">
-                        <el-image :src="item.coverSrc"></el-image>
+                        <img class="opacity0" @load="handleLoad" :src="item.coverSrc" />
                     </div>
                     <div class="right-info">
                         <h4>{{ item.name }}</h4>
@@ -47,7 +47,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import playAll from '../../../utils/playAll';
-import suggestList from './suggestlist.vue';
+import suggestList from './suggestList.vue';
 
 const router = useRouter();
 let suggestLists = reactive([])
@@ -95,60 +95,60 @@ const section1List = reactive([
         songList: []
     }
 ])
-
 // 初始化部分信息
 const getCover = async () => {
     try {
         const { data: data1 } = await getPrivate()
         const { data: data2 } = await getDaily()
+        if (data1.code === 200) {
+            // 设置封面
+            section1List[0].coverSrc = data2.data.dailySongs[0].al.picUrl;
+            section1List[1].coverSrc = data1.recommend[0].picUrl;
+            section1List[2].coverSrc = data1.recommend[4].picUrl;
+            // 每日推荐
+            data1.recommend?.forEach((item, index) => {
+                if (index <= 9) {
+                    dailyList.push(item)
+                }
+            })
+            // 绑定歌单id
+            section1List[1].listId = data1.recommend[0].id;
+            section1List[2].listId = data1.recommend[4].id;
 
-        // 设置封面
-        section1List[0].coverSrc = data2.data.dailySongs[0].al.picUrl;
-        section1List[1].coverSrc = data1.recommend[0].picUrl;
-        section1List[2].coverSrc = data1.recommend[4].picUrl;
+            // 获取歌单第一首歌
+            const { data: songs1 } = await getSongListAllSong({
+                id: section1List[1].listId
+            })
+            const { data: songs2 } = await getSongListAllSong({
+                id: section1List[2].listId
+            })
 
-        // 每日推荐
-        data1.recommend?.forEach((item, index) => {
-            if (index <= 9) {
-                dailyList.push(item)
-            }
-        })
-        // 绑定歌单id
-        section1List[1].listId = data1.recommend[0].id;
-        section1List[2].listId = data1.recommend[4].id;
+            // 设置描述
+            section1List[1].des = songs1.songs[0].name + '-' + songs1.songs[0].ar[0].name;
+            section1List[2].des = songs2.songs[0].name + '-' + songs2.songs[0].ar[0].name;
+            // 设置歌曲列表
+            section1List[1].songList = songs1.songs;
+            section1List[2].songList = songs2.songs;
+            section1List[0].songList = data2.data.dailySongs;
+            // 获取推荐歌单
+            const res2 = await getDailyList({
+                limit: 10
+            })
+            res2?.data?.result?.forEach((item, index) => {
+                suggestLists.push(item)
+            })
 
-        // 获取歌单第一首歌
-        const { data: songs1 } = await getSongListAllSong({
-            id: section1List[1].listId
-        })
-        const { data: songs2 } = await getSongListAllSong({
-            id: section1List[2].listId
-        })
-
-        // 设置描述
-        section1List[1].des = songs1.songs[0].name + '-' + songs1.songs[0].ar[0].name;
-        section1List[2].des = songs2.songs[0].name + '-' + songs2.songs[0].ar[0].name;
-        // 设置歌曲列表
-        section1List[1].songList = songs1.songs;
-        section1List[2].songList = songs2.songs;
-        section1List[0].songList = data2.data.dailySongs;
-        // 获取推荐歌单
-        const res2 = await getDailyList({
-            limit: 10
-        })
-        res2?.data?.result?.forEach((item, index) => {
-            suggestLists.push(item)
-        })
-
-        // 获取精品歌单
-        const { data: highList } = await getHighPlayList({
-            limit: 50,
-            cat: 'ACG'
-        })
-        highList.playlists?.forEach((item, index) => {
-            highPlayList.push(item)
-        })
-
+            // 获取精品歌单
+            const { data: highList } = await getHighPlayList({
+                limit: 50,
+                cat: 'ACG'
+            })
+            highList.playlists?.forEach((item, index) => {
+                highPlayList.push(item)
+            })
+        } else {
+            await getCover()
+        }
     } catch (error) {
         console.log(error);
         ElMessage.error(error);
@@ -178,6 +178,9 @@ const handlePlayClick = (item) => {
         playAll(item.songList);
     }
 }
+const handleLoad = (e) => {
+    e.target.style.opacity = 1;
+}
 
 // 初始化
 onBeforeMount(() => {
@@ -188,6 +191,23 @@ onBeforeMount(() => {
 </script>
 
 <style lang="less" scoped>
+.opacity0 {
+    opacity: 0;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.left-img {
+    overflow: hidden;
+    background: linear-gradient(-45deg, #F1F2F3 25%, #fff 45%, #F1F2F3 65%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.2s ease-in-out infinite;
+}
+
 .container {
     box-sizing: border-box;
     width: 100%;
@@ -293,8 +313,10 @@ onBeforeMount(() => {
                 font-size: 20px;
 
                 .des {
+                    width: 100%;
                     margin-top: 5px;
-                    font-size: 14px;
+                    font-size: 13px;
+                    color: var(--font-color-light);
                 }
             }
 

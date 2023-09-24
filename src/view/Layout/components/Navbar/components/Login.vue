@@ -2,7 +2,7 @@
     <div class="login_box">
         <div class="login_container">
             <!-- 关闭按钮 -->
-            <div class="closeBtn iconfont">&#xe903;</div>
+            <div class="closeBtn iconfont" @click="closeLoginBox">&#xe903;</div>
             <!-- 关闭按钮 -->
 
             <!-- 登录logo -->
@@ -105,12 +105,11 @@ const qrLoginInit = async (flag = true) => {
         } else if (data.code === 801) {
             qrStatus.value = '等待扫码'
         } else if (data.code === 802) {
+            if (document.cookie) {
+                document.cookie = "url=MUSIC_A; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "url=NMTID; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
             qrStatus.value = '待确认'
-            // avatarUrl: "https://p1.music.126.net/GVPebtLTETjwl1ntIuZr4w==/109951165279100956.jpg"
-            // code: 802
-            // cookie: ""
-            // message: "授权中"
-            // nickname: "若知是梦何须醒_aWab"
             userInfos.user_avatar = data.avatarUrl
             userInfos.user_name = data.nickname
             // 添加localStorage
@@ -142,6 +141,12 @@ const qrLoginInit = async (flag = true) => {
             }, 1000)
         }
     }, 2000);
+}
+
+const closeLoginBox = () => {
+    clearInterval(qrTimer)
+    qrTimer = null;
+    updateStatus(false)
 }
 
 const handleVisitorLogin = async () => {
@@ -213,6 +218,7 @@ onMounted(async () => {
             top: 20px;
             right: 20px;
             font-size: 20px;
+            cursor: pointer;
         }
 
         .login_logo {

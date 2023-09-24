@@ -1,7 +1,7 @@
 <template>
     <!-- 私人订制 -->
     <div class="suggest-list">
-        <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="custMizedList" :item-height="250" :top-height="180">
+        <virtual-list @getMoreData="handleLoad" :cols="5" :data-source="custMizedList" :item-height="250" :top-height="120">
             <template #item="{ item, col }">
                 <img-card :item.async="col.content" :closeIcon="false" :isSingerList="false"></img-card>
             </template>
