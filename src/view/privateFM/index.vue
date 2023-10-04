@@ -79,6 +79,7 @@ import playSong from '@/utils/playSong.js'
 import { privateFM } from '@/api/myFavourite'
 import mulArShow from '../../utils/mulArShow';
 import { sendComment } from '@/api/songList.js'
+import { eventBus } from '../../utils/eventBus'
 
 const updateFlag = ref(0)
 const opacity = ref(0)
@@ -104,7 +105,7 @@ const handleSendComment = async () => {
             ElMessage.error('发送失败')
         }
         // 刷新评论列表
-        updateFlag.value = updateFlag.value + 1;
+        eventBus.$emit('updateComments')
     } catch (error) {
         ElMessage.error('内部错误')
     }

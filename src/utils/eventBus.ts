@@ -17,7 +17,11 @@ class EventBus {
     }
     return;
   }
-  $remove(eventName: string, callback: Function) {}
+  $remove(eventName: string, callback: Function) {
+    if (this.events[eventName] && this.events[eventName].length) {
+      this.events[eventName].filter((cb) => cb !== callback);
+    }
+  }
   $clear(eventName: string) {}
 }
 

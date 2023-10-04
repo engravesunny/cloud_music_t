@@ -23,6 +23,7 @@
 import pageDivision from './pageDivision.vue'
 import commitCell from './commitCell.vue'
 import { getCommits, limit } from '../utils/getComments'
+import { eventBus } from '../../../utils/eventBus';
 
 const props = defineProps<{
     FMInfo: any[],
@@ -72,21 +73,21 @@ const changePage = (page: number) => {
         updateComments();
     }
 }
-
+const updateCommnets = () => {
+    curPage.value = 0;
+    updateComments();
+}
 onMounted(() => {
+    eventBus.$on('updateComments', updateCommnets)
     setComments();
 })
-
+onBeforeUnmount(() => {
+    eventBus.$remove('updateComments', updateCommnets);
+})
 watch(() => props.index, () => {
     setComments();
 }, {
     deep: true,
-})
-watch(() => props.updateFlag, () => {
-    if (props.updateFlag) {
-        curPage.value = 0;
-        updateComments();
-    }
 })
 
 
