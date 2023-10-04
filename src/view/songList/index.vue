@@ -25,7 +25,6 @@ watch(route, async (val) => {
     const { data: albumInfo } = await getAlbumContent({
       id: songlistId.value
     })
-    console.log(albumInfo);
 
     albumSongList.value = albumInfo.songs
     songListInfo.push(albumInfo.album)

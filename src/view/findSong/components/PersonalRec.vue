@@ -10,7 +10,7 @@
                     </div>
 
                     <div class="left-img" fit="cover">
-                        <img class="opacity0" @load="handleLoad" :src="item.coverSrc" />
+                        <img class="opacity0" @load="handleLoad" :src="item.coverSrc + '?params=150y150'" />
                     </div>
                     <div class="right-info">
                         <h4>{{ item.name }}</h4>
@@ -40,6 +40,7 @@
 </template>
 
 <script setup>
+import { eventBus } from "../../../utils/eventBus";
 import { getHighPlayList } from "@/api/songList";
 import { getDailySongs as getPrivate, getSongListAllSong, getDailyList } from '@/api/songList';
 import { getDailySongs as getDaily } from '@/api/myFavourite'
@@ -100,7 +101,7 @@ const getCover = async () => {
     try {
         const { data: data1 } = await getPrivate()
         const { data: data2 } = await getDaily()
-        if (data1.code === 200) {
+        if (data1.code === 200 && data2.code === 200) {
             // 设置封面
             section1List[0].coverSrc = data2.data.dailySongs[0].al.picUrl;
             section1List[1].coverSrc = data1.recommend[0].picUrl;
@@ -151,7 +152,10 @@ const getCover = async () => {
         }
     } catch (error) {
         console.log(error);
-        ElMessage.error(error);
+        if (error.response?.status === 301) {
+            ElMessage.error('登录过期，请重新登录')
+            eventBus.$emit('logout')
+        }
     }
 
 }

@@ -30,6 +30,12 @@ request.interceptors.request.use(config => {
 
 // 响应拦截
 request.interceptors.response.use(response => {
+  if (response.status !== 200) {
+    console.log(response);
+  }
+  if (response.data.code === 301) {
+    ElMessage.error(response.data.msg);
+  }
   const cookie = response.headers['set-cookie']
   if (cookie) {
     document.cookie = cookie

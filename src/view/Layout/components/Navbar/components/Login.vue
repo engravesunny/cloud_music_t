@@ -45,6 +45,7 @@ import 'element-plus/theme-chalk/el-message-box.css';
 import 'element-plus/theme-chalk/el-message.css';
 
 //  二维码转图片库
+import { eventBus } from '../../../../../utils/eventBus';
 import { visitorLogin, qrKey, qrCreate, qrCheck, getUserInfoDetail } from '@/api/user.js'
 import { onBeforeMount, reactive } from 'vue'
 import QRCode from 'qrcode'
@@ -151,7 +152,6 @@ const closeLoginBox = () => {
 
 const handleVisitorLogin = async () => {
     const { data } = await visitorLogin();
-    console.log(data);
     document.cookie = data.cookie
     ElMessage({
         message: '登陆成功',
@@ -162,7 +162,6 @@ const handleVisitorLogin = async () => {
     qrTimer = null;
     // 获取用户信息
     const res = await getUserInfoDetail()
-    console.log(res);
     // // 添加cookie到token,存入用户信息
     localStorage.setItem('CLOUD_MUSIC', data.cookie)
     userInfo.value.nickname = '游客'

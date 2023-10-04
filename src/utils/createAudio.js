@@ -33,10 +33,18 @@ const createAudio = (songUrl) => {
         }
     }, 3000);
     audio.oncanplaythrough = () => {
-        audio.play();
-        clearTimeout(timer)
-        timer = null
-        audio.oncanplaythrough = null
+        try {
+            audio.play().then(() => {
+                audio.autoplay = true;
+            }).catch(() => {
+                audio.autoplay = false;
+            });
+            clearTimeout(timer)
+            timer = null
+            audio.oncanplaythrough = null
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 

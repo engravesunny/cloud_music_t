@@ -38,8 +38,10 @@ const routes = [
                             localStorage.removeItem('CLOUD_MUSIC')
                             user().reset();
                         }
+                        next();
+                    } else {
+                        next();
                     }
-                    next();
                 }
             },
             {
@@ -95,7 +97,6 @@ const routeNeedToken = ["/myLike", "/suggestSong", "/songList", "/privateFM"]
 
 router.beforeEach((to, from, next) => {
     if (to.path !== '/privateFM') {
-        console.log(songInfo);
         songInfo.FMMode = false
         songInfo.FMList = []
     }

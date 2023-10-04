@@ -56,7 +56,6 @@ const getPlayList = async () => {
         }
         loading.value = false
     } catch (error) {
-        console.log(error);
         ElNotification.error('加载失败')
     }
 }

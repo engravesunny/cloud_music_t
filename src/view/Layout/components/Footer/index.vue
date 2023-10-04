@@ -78,10 +78,9 @@ import createAudio from '../../../../utils/createAudio';
 import nextSong from '../../../../utils/nextSong'
 // 歌曲结束判定工具
 import songEndFn from '../../../../utils/songEndFn'
-
-
-// 引入api
-import { getSongUrl } from '@/api/search'
+// 歌曲url判定
+import { checkSong } from '../../../../api/search';
+import { getSongUrl } from '../../../../api/search';
 // 引入图标
 import '@/assets/icon/iconfont/iconfont.css'
 // 引入多歌手分割工具
@@ -89,7 +88,6 @@ import mulArShow from '../../../../utils/mulArShow';
 // 引入底部播放栏状态信息
 import { song } from '@/store/song.js'
 import { storeToRefs } from 'pinia'
-import { checkSong } from '../../../../api/search';
 const songStore = song()
 let { songInfo } = storeToRefs(songStore)
 
@@ -111,32 +109,57 @@ const changePlayingState = () => {
 let songState = songInfo.value
 
 // 等用户再次来到页面时，读取本地缓存，有缓存就使用缓存，创建audio标签
-let initAudio = () => {
-    if (songInfo.value.songUrl) {
-        // 如果已有audio标签，就删除它
-        const audios = document.querySelectorAll('audio')
-        if (audios) {
-            for (let i = 0; i < audios.length; i++) {
-                audios[i].remove()
+let initAudio = async () => {
+    try {
+        if (songInfo.value.songUrl) {
+            // 如果已有audio标签，就删除它
+            const audios = document.querySelectorAll('audio')
+            if (audios) {
+                for (let i = 0; i < audios.length; i++) {
+                    audios[i].remove()
+                }
             }
+            // 创建audio
+            const createAudio = () => {
+                const audio = document.createElement('audio')
+                audio.src = songInfo.value.songUrl
+                audio.volume = songInfo.value.volume / 100
+                audio.style = 'display:none;'
+                document.body.appendChild(audio)
+                audio.addEventListener('play', () => {
+                    isPlaying.value = true
+                })
+                audio.addEventListener('pause', () => {
+                    isPlaying.value = false
+                })
+                audio.addEventListener('timeupdate', changeTimeFn)
+                // 歌曲结束是的判定函数
+                audio.onended = () => {
+                    songEndFn()
+                    audio.onended = null
+                }
+            }
+
+            // 判定歌曲url是否可用
+            const { data } = await checkSong({
+                url: songInfo.value.songUrl
+            })
+            if (data.success) {
+                createAudio();
+            } else {
+                const { data: urlData } = await getSongUrl({
+                    id: songInfo?.value?.currentPlayingSong?.id
+                })
+                if (urlData.code === 200) {
+                    songInfo.value.currentPlayingSong = urlData.data[0]
+                    songInfo.value.songUrl = urlData.data[0].url
+                    createAudio();
+                }
+            }
+
         }
-        const audio = document.createElement('audio')
-        audio.src = songInfo.value.songUrl
-        audio.volume = songInfo.value.volume / 100
-        audio.style = 'display:none;'
-        document.body.appendChild(audio)
-        audio.addEventListener('play', () => {
-            isPlaying.value = true
-        })
-        audio.addEventListener('pause', () => {
-            isPlaying.value = false
-        })
-        audio.addEventListener('timeupdate', changeTimeFn)
-        // 歌曲结束是的判定函数
-        audio.onended = () => {
-            songEndFn()
-            audio.onended = null
-        }
+    } catch (error) {
+        console.log(error);
     }
 }
 

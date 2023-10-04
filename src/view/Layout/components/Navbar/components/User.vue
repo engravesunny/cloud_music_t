@@ -68,7 +68,8 @@ import { ElMessage } from 'element-plus'
 import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { user } from '../../../../../store/user'
-import { visitorLogin } from '../../../../../api/user';
+import { eventBus } from '../../../../../utils/eventBus';
+
 const userStore = user();
 
 let userInfos = reactive({
@@ -121,6 +122,12 @@ const Logout = async () => {
 const close = () => {
     showAbout.value = false
 }
+
+onMounted(() => {
+    eventBus.$on('logout', (...args) => {
+        Logout();
+    })
+})
 
 </script>
 

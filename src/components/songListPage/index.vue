@@ -93,7 +93,6 @@ const props = defineProps({
 const opacity = ref(0)
 const handleLoaded = () => {
     opacity.value = 1;
-    console.log(opacity.value);
 }
 
 let timer = null
