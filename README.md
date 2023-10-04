@@ -1,7 +1,52 @@
-# Vue 3 + Vite
+## 线上地址
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+[刻猫猫的音乐盒]('http://kecat.top:3000')  
 
-## Recommended IDE Setup
+## github地址
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+cloud_music_t('<https://github.com/engravesunny/cloud_music_t>')
+
+## 技术栈
+
+- vue3
+- vue-router
+- pinia
+- axios
+- element-plus
+
+## 项目亮点
+
+部分列表采用了**虚拟列表**和**无限滚动**，实现了**歌词滚动**，采用**二维码登录**，使用**css变量实现主题切换**
+
+## 主要功能
+
+- 页面布局：顶部导航栏，侧边栏，主内容以及底部播放栏四个区域
+- 顶部导航栏：展示logo，搜索框（防抖优化），主题切换以及登录模块
+- 侧边栏：
+  - 1.发现音乐：使用动态组件进行动态选择渲染：个性推荐模块，私人定制模块，歌单模块，歌手模块，榜单模块，最新音乐模块
+  - 2.私人FM：用户在该页面下开启FM收听模式，请求FM接口并播放FM歌曲，同时设有歌曲信息展示、歌词滚动、评论信息展示、发送评论等模块
+  - 3.我的收藏：展示用户收藏的歌曲列表以及歌曲信息，此页面复用了歌单展示页面
+  - 4.每日推荐：展示每日推荐歌曲
+  - 5.创建与收藏歌单：展示用户创建与收藏的歌单，并可以利用router跳转到歌单详情页面
+- 主内容区域：通过vue-router展示不同路由下的页面详情
+- 底部播放栏：展示当前正在播放的歌曲信息，并且设置了上一曲，暂停/播放，下一曲，进度条，播放模式，音量控制，展示播放歌曲列表等功能
+
+安装和使用
+环境要求
+# 查看 node 版本，确保 node 版本高于 12 版本
+node -v
+安装
+# 根目录安装项目依赖
+yarn install or npm install
+使用
+# 本地运行
+```bash
+yarn run dev or npm run dev
+部署到线上环境与本地运行不同，因为项目中的前端部分是 SPA，所以需要部署到服务器软件（nginx 等）的静态目录下，所以前端需要单独打包，而后端本身就是一个 node 服务，只需要启动即可运行。但是，后端服务需要服务器转发才可以生效。
+```
+
+# 获取打包后的SPA
+yarn build or npm run build
+
+# 为前端网站配置好相应的域名，为后端服务做好反向代理
+# 把打包好的静态文件迁移到对应的服务器软件目录中
