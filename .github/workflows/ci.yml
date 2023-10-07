@@ -1,0 +1,52 @@
+name: CD
+on:
+  # 代码push的时候触发
+  push:
+    # main分支的时候触发
+    branches: [main]
+jobs:
+  # 定义一个job，名字为CI
+  CD:
+    runs-on: ubuntu-latest
+    steps:
+      # 拉取项目代码
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      # 给当前环境下载node
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+      # 检查缓存
+      # 如果key命中缓存则直接将缓存的文件还原到 path 目录，从而减少流水线运行时间
+      # 若 key 没命中缓存时，在当前Job成功完成时将自动创建一个新缓存
+      - name: Cache
+        # 花村命中结果会存储在steps.[id].outputs.cache-hit里
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+        # 缓存路径
+          path: |
+            **/node_modules
+          key: ${{runner.OS}}-${{hashFiles('**/yarn.lock')}}
+      - name: Installing Dependencies
+        # 如果缓存标志未选中，则执行该step，否则跳过该step
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: yarn install
+      # 打包生成制品
+      - name: Building
+        run: |
+          yarn build
+      # 打包好的静态文件上传到七牛云
+      - name: Upload to QiNiu
+        run: |
+          node upload-qiniu prod
+      # html文件上传到服务器
+      - name: Upload to Deploy Server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:  
+          username: 'root'   #ssh user name
+          server: '47.93.87.206' #引用之前创建好的secret
+          local_path: 'dist/index.html'  # 对应我们项目build的文件夹路径
+          remote_path: '/serve/musicServe/public'
+          password: 'binyu1314..'
