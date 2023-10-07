@@ -138,6 +138,7 @@ const likeIt = async (id, like) => {
     router.go(0)
 }
 onMounted(async () => {
+    console.log(props.songTotal);
     getLikeIds()
 })
 </script>

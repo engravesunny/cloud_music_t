@@ -1,5 +1,6 @@
 <template>
-    <div><virtual-list @getMoreData="handleLoad" :top-height="130" :item-height="250" :data-source="searchResult" :cols="5">
+    <div><virtual-list @getMoreData="handleLoad" :is-has-data="isHasData" :top-height="130" :item-height="250"
+            :data-source="searchResult" :cols="5">
             <template #item="{ item, col }">
                 <img-card :is-album="true" :item.async="col.content" :closeIcon="false" :isSingerList="false"></img-card>
             </template>
@@ -16,9 +17,10 @@ const props = defineProps<{
     result: any,
     songTotal: any,
 }>()
+let isHasData = ref(true)
 const searchValue = ref(props.searchValue)
 defineEmits(['updatePage'])
-const searchResult = ref([])
+const searchResult = ref<any[]>([])
 const limit = 30;
 const curPage = ref(0)
 const getSearchResult = async () => {
@@ -28,7 +30,13 @@ const getSearchResult = async () => {
         keywords: searchValue.value,
         type: 10
     })
-    searchResult.value = [...searchResult.value, ...data.result.albums]
+    if (!data.result.albumCount) {
+        searchResult.value = [];
+        isHasData.value = false;
+    } else {
+        searchResult.value = [...searchResult.value, ...data.result?.albums]
+    }
+
 }
 const handleLoad = () => {
     curPage.value++;
@@ -38,11 +46,22 @@ const handleLoad = () => {
 onBeforeMount(() => {
     getSearchResult();
 })
-const route = useRoute();
-watch(() => route.query, (val: any) => {
+
+let handleRouteChange = (val: any) => {
     searchValue.value = val.searchValue
     searchResult.value = []
     curPage.value = 0;
     getSearchResult()
+}
+
+const route = useRoute();
+watch(() => route, (val: any) => {
+    if (route.path === '/search') {
+        handleRouteChange(route.query)
+    } else {
+        return;
+    }
+}, {
+    deep: true,
 })
 </script>

@@ -79,6 +79,9 @@ import formatDate from '@/utils/formatDate.js';
 import singleSong from '../singleSong/index.vue'
 import { getSongListAllSong } from '@/api/songList.js'
 import { onMounted } from 'vue';
+
+const route = useRoute();
+
 const props = defineProps({
     songListInfo: {
         type: Array,
@@ -126,13 +129,13 @@ const addAllList = async () => {
         ElNotification("正在加载歌曲喵")
         if (props.albumSongList.length) {
             ElNotification.success('加载成功喵')
-            addAllList(props.albumSongList)
+            addList(props.albumSongList)
         } else {
             const res = await getSongListAllSong({
                 id: props.songListInfo[0]?.id
             })
             ElNotification.success('加载成功喵')
-            addAllList(res.data?.songs)
+            addList(res.data?.songs)
         }
     } catch (error) {
         ElMessage.error(error.message)
@@ -140,7 +143,8 @@ const addAllList = async () => {
 }
 const load = async () => {
     try {
-        if (!props.albumSongList.length) {
+        if (!props.albumSongList?.length && !route.query.album) {
+            // 不是专辑页
             if (finished.value) return
             if (!isMounted.value) return
             isloading.value = true
@@ -189,24 +193,31 @@ onMounted(() => {
 })
 watch(() => props.songListInfo, async (val) => {
     try {
-        opacity.value = 0
-        offset.value = 0
-        isMounted.value = false
-        loading.value = true
-        finished.value = false
-        songList.length = 0;
-        const res = await getSongListAllSong({
-            id: val[0].id,
-            limit: 50,
-            offset: offset.value * 100
-        })
-        songList_info.pop()
-        songList_info.push(val[0])
-        res.data?.songs?.map(item => {
-            songList.push(item)
-        })
-        loading.value = false
-        isMounted.value = true
+        if (!route.query.album) {
+            opacity.value = 0
+            offset.value = 0
+            isMounted.value = false
+            loading.value = true
+            finished.value = false
+            songList.length = 0;
+            const res = await getSongListAllSong({
+                id: val[0].id,
+                limit: 50,
+                offset: offset.value * 100
+            })
+            songList_info.pop()
+            songList_info.push(val[0])
+            res.data?.songs?.map(item => {
+                songList.push(item)
+            })
+            loading.value = false
+            isMounted.value = true
+        } else {
+            songList_info.length = 0;
+            songList_info.push(val[0])
+            loading.value = false
+            isMounted.value = true
+        }
     } catch (error) {
         console.log(error.message);
     }

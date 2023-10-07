@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 const searchValue = ref(props.searchValue)
 const emits = defineEmits(['updatePage'])
-const searchResult = ref([])
+const searchResult = ref<any[]>([])
 const limit = 30;
 const curPage = ref(0)
 const getSearchResult = async () => {
@@ -39,12 +39,22 @@ const handleLoad = () => {
 onBeforeMount(() => {
     getSearchResult();
 })
-const route = useRoute();
-watch(() => route.query, (val: any) => {
+let handleRouteChange = (val: any) => {
     searchValue.value = val.searchValue
     searchResult.value = []
     curPage.value = 0;
     getSearchResult()
+}
+
+const route = useRoute();
+watch(() => route, (val: any) => {
+    if (route.path === '/search') {
+        handleRouteChange(route.query)
+    } else {
+        return;
+    }
+}, {
+    deep: true,
 })
 
 </script>

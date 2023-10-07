@@ -147,8 +147,6 @@ const getCover = async () => {
             highList.playlists?.forEach((item, index) => {
                 highPlayList.push(item)
             })
-        } else {
-            await getCover()
         }
     } catch (error) {
         console.log(error);

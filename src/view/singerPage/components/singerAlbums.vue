@@ -3,11 +3,12 @@
         <div class="right">
             <div class="topBtn">
                 <div class="title">热门50首 </div>
-                <div class="playAll iconfont">&#xe600;</div>
-                <div class="addAll iconfont">&#xe86a;</div>
+                <div @click="playAll(songList)" class="playAll iconfont">&#xe600;</div>
+                <div @click="addList(songList)" class="addAll iconfont">&#xe86a;</div>
             </div>
             <div class="bottomList">
-                <div class="list-item" v-for="(item, index) in songFinalList" :key="item.id">
+                <div class="list-item unselectable" @dblclick="dbClickSong(item)" v-for="(item, index) in songFinalList"
+                    :key="item.id">
                     <div class="option">
                         <div v-if="item.id === songInfo.currentPlayingSong.id" class="playingIcon iconfont">&#xe62e;</div>
                         <div v-else class="index">{{ (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }}</div>
@@ -33,6 +34,9 @@
 </template>
 
 <script setup lang="ts">
+import playAll from '../../../utils/playAll';
+import { addList } from '../../../utils/playAll'
+import dbClickSong from '../../../utils/playSong'
 import albumList from './albumList.vue';
 import { user } from '../../../store/user';
 import { toLikeSong, getMyFavourite } from '../../../api/myFavourite';
@@ -109,6 +113,14 @@ watch(() => props.id, () => {
 
             .title {
                 margin-right: 10px;
+            }
+
+            .playAll {
+                cursor: pointer;
+            }
+
+            .addAll {
+                cursor: pointer;
             }
 
             .iconfont {

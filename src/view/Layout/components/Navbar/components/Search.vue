@@ -26,14 +26,14 @@
                     猜你想搜</div>
                 <ul v-if="suggestList.length && showSuggest && searchText">
                     <li class="suggest_cell shenglue" v-for="item in suggestList" :key="item.id"
-                        @click="suggestSearch(item.name)">
+                        @click="$event => suggestSearch($event, item.name)">
                         {{ item.name }}{{ item.artists.length ? ' - ' : '' }}
                         <span v-for="artist in item.artists" :key="artist.id">{{ artist.name + ' ' }}</span>
                     </li>
                 </ul>
                 <ul v-if="!suggestList.length && showSuggest && !searchText">
                     <li class="suggest_cell shenglue" v-for="item in hotSong" :key="item.first"
-                        @click="suggestSearch(item.first)">
+                        @click="$event => suggestSearch($event, item.first)">
                         {{ item.first }}
                     </li>
                 </ul>
@@ -134,7 +134,13 @@ let Fn = async () => {
 const searchSuggestFn = debounce(Fn, 300);
 
 // 点击搜索建议搜索
-let suggestSearch = async (name) => {
+let suggestSearch = async (e, name) => {
+    // 点击列表项时判断是否为li标签，li标签带有全部信息，内嵌标签span只带有歌手信息需要需找它的父节点
+    if (e.target.nodeName === 'LI') {
+        name = e.target.innerText;
+    } else {
+        name = e.target.parentNode.innerText
+    }
     router.push({
         path: '/search',
         query: {

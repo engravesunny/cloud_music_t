@@ -31,14 +31,20 @@ const routes = [
                 },
                 beforeEnter: async (to, from, next) => {
                     if (!userInfo.cookie) {
-                        await visitorLogin();
-                        const { data } = await logout()
-                        if (data.code === 200) {
-                            localStorage.removeItem('userInfo')
-                            localStorage.removeItem('CLOUD_MUSIC')
-                            user().reset();
+                        try {
+                            const { data: loginInfo } = await visitorLogin();
+                            const cookie = loginInfo.cookie.split(';').slice(74, 78).join(';') + ';';
+                            document.cookie = cookie
+                            const { data } = await logout()
+                            if (data.code === 200) {
+                                localStorage.removeItem('userInfo');
+                                localStorage.removeItem('CLOUD_MUSIC');
+                                user().reset();
+                            }
+                            next();
+                        } catch (error) {
+                            ElMessage.error(error.message);
                         }
-                        next();
                     } else {
                         next();
                     }

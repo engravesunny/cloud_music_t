@@ -1,5 +1,6 @@
 <template>
-    <div><virtual-list @getMoreData="handleLoad" :top-height="130" :item-height="250" :data-source="searchResult" :cols="5">
+    <div><virtual-list :is-has-data="isHasData" @getMoreData="handleLoad" :top-height="130" :item-height="250"
+            :data-source="searchResult" :cols="5">
             <template #item="{ item, col }">
                 <img-card @click="toSingerPage(col.content)" :is-album="false" :item.async="col.content" :closeIcon="true"
                     :isSingerList="true"></img-card>
@@ -17,9 +18,10 @@ const props = defineProps<{
     result: any,
     songTotal: any,
 }>()
+let isHasData = ref(true)
 const searchValue = ref(props.searchValue)
 defineEmits(['updatePage'])
-const searchResult = ref([])
+const searchResult = ref<any[]>([])
 const limit = 30;
 const curPage = ref(0)
 const getSearchResult = async () => {
@@ -29,7 +31,12 @@ const getSearchResult = async () => {
         keywords: searchValue.value,
         type: 100
     })
-    searchResult.value = [...searchResult.value, ...data.result.artists]
+    if (data.result.artistCount) {
+        searchResult.value = [...searchResult.value, ...data.result.artists]
+    } else {
+        searchResult.value = [];
+        isHasData.value = false;
+    }
 }
 const handleLoad = () => {
     curPage.value++;
@@ -44,18 +51,28 @@ const toSingerPage = (context: any) => {
                 id: context.id,
             }
         })
-    } catch (error) {
-        ElMessage.error(error)
+    } catch (error: any) {
+        ElMessage.error(error.message)
     }
 }
 onBeforeMount(() => {
     getSearchResult();
 })
-const route = useRoute();
-watch(() => route.query, (val: any) => {
+let handleRouteChange = (val: any) => {
     searchValue.value = val.searchValue
     searchResult.value = []
     curPage.value = 0;
     getSearchResult()
+}
+
+const route = useRoute();
+watch(() => route, (val: any) => {
+    if (route.path === '/search') {
+        handleRouteChange(route.query)
+    } else {
+        return;
+    }
+}, {
+    deep: true,
 })
 </script>

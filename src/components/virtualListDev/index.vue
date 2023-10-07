@@ -1,5 +1,5 @@
 <template>
-    <div class="virtual-list-container" v-loading="!dataSource.length">
+    <div v-if="isHasData" class="virtual-list-container" v-loading="!dataSource.length">
         <div :style="{
             height: `${(mockData.length - startIndex) * props.itemHeight}px`,
             transform: `translateY(${startIndex * props.itemHeight}px)`,
@@ -10,7 +10,9 @@
                 </div>
             </div>
         </div>
-
+    </div>
+    <div v-else class="search-not-data">
+        搜索列表为空哦喵~
     </div>
     <div ref="contentRef" class="virtual-list-content"></div>
 </template>
@@ -18,15 +20,18 @@
 <script setup lang="ts">
 
 const emits = defineEmits(['getMoreData'])
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     // 距离顶部距离
     topHeight: number,
     // 单个li高度
     itemHeight: number,
     // 渲染数据
     dataSource: any[],
-    cols: number
-}>();
+    cols: number,
+    isHasData?: boolean
+}>(), {
+    isHasData: true
+});
 const cols = ref(props.cols)
 
 const contentRef = ref<HTMLElement>()
@@ -148,6 +153,13 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
+.search-not-data {
+    width: 100%;
+    padding: 50px;
+    text-align: center;
+    color: var(--font-color-light);
+}
+
 .virtual-list {
     &-container {
         width: 100%;

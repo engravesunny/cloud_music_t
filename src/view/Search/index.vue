@@ -77,7 +77,6 @@ let showResult = ref(false)
 onBeforeMount(async () => {
     // 初始化获取歌曲
     await getSearchSongs()
-    songTotal.value = songTotalProp.value
     showResult.value = true
 })
 
@@ -107,6 +106,7 @@ const tranalateType = (type) => {
 // 获取搜索关键词歌曲
 const getSearchSongs = async () => {
     try {
+        searchResult.value = []
         const { searchValue } = route.query
         testSearchText.value = searchValue
         const { data } = await search({
@@ -115,6 +115,7 @@ const getSearchSongs = async () => {
             offset: (searchPage.value) * 100
         })
         searchResult.value = data?.result?.songs || []
+        songTotal.value = data?.result?.songCount
     } catch (error) {
         ElMessage.error(error.message)
     }
@@ -145,7 +146,7 @@ const changeSearchType = async (e) => {
 
 // 监听路由
 watch(route, async (val) => {
-    if (!val.path === '/search') {
+    if (!(val.path === '/search')) {
         return;
     } else {
         // 页数置零
