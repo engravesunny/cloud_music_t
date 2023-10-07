@@ -26,7 +26,7 @@
 import { mdDate } from '@/utils/formatDate'
 import playSong from '../../../utils/playSong';
 import playAll from '@/utils/playAll';
-import playList from './suggestlist.vue'
+import playList from './suggestList.vue'
 import { getAllRanks, getAllRankDetail, getSongListAllSong } from '@/api/songList'
 import { onBeforeMount, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
