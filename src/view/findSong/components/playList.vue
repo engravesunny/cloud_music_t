@@ -37,7 +37,6 @@
 <script setup>
 import imgCard from './imgCard.vue'
 import virtualList from '@/components/virtualListDev/index.vue'
-import suggestlist from './suggestlist.vue';
 import { onMounted, reactive } from 'vue';
 import { getListCategory, getCatPlayList } from '../../../api/songList';
 
