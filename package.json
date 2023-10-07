@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "upload": "node upload-qiniu",
+    "clear": "node clear-qiniu"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
@@ -16,7 +18,9 @@
     "qrcode": "^1.5.1",
     "swiper": "^7.4.1",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "moment": "^2.18.1",
+    "qiniu": "^7.0.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
