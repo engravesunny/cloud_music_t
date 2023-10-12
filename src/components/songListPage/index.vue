@@ -39,7 +39,7 @@
                 <div v-if="songList_info[0]" class="rest_info">
 
                     <!-- 歌曲总数 -->
-                    <div class="songs_total iconfont">&#xea86; {{ (songList_info[0].trackCount + 1) || albumSongList.length
+                    <div class="songs_total iconfont">&#xea86; {{ (songList_info[0].trackCount) || albumSongList.length
                     }}</div>
                     <!-- 歌曲总数 -->
 
