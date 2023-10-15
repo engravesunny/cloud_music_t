@@ -48,7 +48,7 @@ const currentCategory = ref('全部');
 const showBanner = ref(false);
 const hotCategories = reactive([]);
 const curPage = ref(0)
-const limit = 30;
+const limit = 40;
 const finished = ref(false);
 const loading = ref(false);
 

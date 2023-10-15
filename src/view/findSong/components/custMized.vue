@@ -19,7 +19,7 @@ import { ElMessage } from "element-plus";
 
 let custMizedList = reactive([]);
 const curPage = ref(0);
-const limit = ref(30);
+const limit = ref(40);
 const finished = ref(false);
 const loading = ref(false)
 

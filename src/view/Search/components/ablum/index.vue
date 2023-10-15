@@ -21,7 +21,7 @@ let isHasData = ref(true)
 const searchValue = ref(props.searchValue)
 defineEmits(['updatePage'])
 const searchResult = ref<any[]>([])
-const limit = 30;
+const limit = 40;
 const curPage = ref(0)
 const getSearchResult = async () => {
     const { data } = await search({

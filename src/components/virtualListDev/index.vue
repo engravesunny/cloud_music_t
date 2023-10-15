@@ -75,7 +75,7 @@ let mockData = computed((): Rows[] => {
 
 const endIndex = computed(() => {
     const viewHeight = contentRef.value?.offsetHeight ? contentRef.value.offsetHeight : 0;
-    const res = Math.min(mockData.value.length, startIndex.value + Math.ceil((viewHeight / props.itemHeight)) + 1);
+    const res = Math.min(mockData.value.length, startIndex.value + Math.ceil((viewHeight / props.itemHeight)) + 4);
     return res < 2 ? 2 : res;
 })
 const renderList = computed(() => {
