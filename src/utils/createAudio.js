@@ -43,7 +43,7 @@ const createAudio = (songUrl) => {
             timer = null
             audio.oncanplaythrough = null
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
     }
 }

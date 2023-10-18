@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const baseURL = import.meta.env.VITE_SRC
-console.log(baseURL);
+// console.log(baseURL);
 const request = axios.create({
   // baseURL: '/api',
   // baseURL:'http://localhost:3000/',
@@ -33,7 +33,7 @@ request.interceptors.request.use(config => {
 // 响应拦截
 request.interceptors.response.use(response => {
   if (response.status !== 200) {
-    console.log(response);
+    // console.log(response);
   }
   if (response.data.code === 301) {
     ElMessage.error(response.data.msg);

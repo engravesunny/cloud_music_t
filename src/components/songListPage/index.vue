@@ -98,7 +98,6 @@ const handleLoaded = () => {
     opacity.value = 1;
 }
 
-let timer = null
 let loading = ref(true)
 let songList = reactive([])
 let offset = ref(0)
@@ -154,6 +153,7 @@ const load = async () => {
                 limit: 50,
                 offset: offset.value * 50
             })
+
             if (res.data?.songs?.length === 0 && isMounted.value) {
                 finished.value = true
                 isloading.value = false
@@ -169,7 +169,7 @@ const load = async () => {
             return;
         }
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
     }
 }
 
@@ -198,6 +198,7 @@ watch(() => props.songListInfo, async (val) => {
             offset.value = 0
             isMounted.value = false
             loading.value = true
+            isloading.value = true;
             finished.value = false
             songList.length = 0;
             const res = await getSongListAllSong({
@@ -219,7 +220,7 @@ watch(() => props.songListInfo, async (val) => {
             isMounted.value = true
         }
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
     }
 }, {
     deep: true,

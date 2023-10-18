@@ -149,7 +149,7 @@ const getCover = async () => {
             })
         }
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         if (error.response?.status === 301) {
             ElMessage.error('登录过期，请重新登录')
             eventBus.$emit('logout')

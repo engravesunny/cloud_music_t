@@ -72,7 +72,7 @@ const init = async () => {
     try {
         await getPlayList();
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         ElMessage.error("Error");
     }
 

@@ -33,6 +33,9 @@
 import Theme from './components/Theme.vue'
 import Search from './components/Search.vue'
 import User from './components/User.vue'
+
+let color = '#000000'
+
 </script>
 
 <style lang="less" scoped>
@@ -46,14 +49,11 @@ import User from './components/User.vue'
     min-width: 900px;
     height: 60px;
     z-index: 999;
-
     .logo {
         display: flex;
         float: left;
         margin-left: 20px;
         height: 60px;
-        background-color: rgba(0, 0, 0, 0);
-
         .logo_container {
             display: flex;
             justify-content: space-between;
