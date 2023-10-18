@@ -98,6 +98,7 @@ const handleLoaded = () => {
     opacity.value = 1;
 }
 
+let timer = null;
 let loading = ref(true)
 let songList = reactive([])
 let offset = ref(0)
@@ -142,32 +143,37 @@ const addAllList = async () => {
 }
 const load = async () => {
     try {
-        if (!props.albumSongList?.length && !route.query.album) {
-            // 不是专辑页
-            if (finished.value) return
-            if (!isMounted.value) return
-            isloading.value = true
-            offset.value = offset.value + 1
-            const res = await getSongListAllSong({
-                id: props.songListInfo[0]?.id,
-                limit: 50,
-                offset: offset.value * 50
-            })
+        clearTimeout(timer);
+        timer = null;
+        timer = setTimeout(async () => {
+            console.log(!props.albumSongList?.length, !route.query.album);
+            if (!props.albumSongList?.length && !route.query.album) {
+                // 不是专辑页
+                if (finished.value) return
+                if (!isMounted.value) return
+                isloading.value = true
+                offset.value = offset.value + 1
+                const res = await getSongListAllSong({
+                    id: props.songListInfo[0]?.id,
+                    limit: 50,
+                    offset: offset.value * 50
+                })
 
-            if (res.data?.songs?.length === 0 && isMounted.value) {
-                finished.value = true
+                if (res.data?.songs?.length === 0 && isMounted.value) {
+                    finished.value = true
+                    isloading.value = false
+                    return
+                }
+                res.data?.songs?.map(item => {
+                    songList.push(item)
+                })
                 isloading.value = false
-                return
+            } else {
+                finished.value = true;
+                loading.value = false;
+                return;
             }
-            res.data?.songs?.map(item => {
-                songList.push(item)
-            })
-            isloading.value = false
-        } else {
-            finished.value = true;
-            loading.value = false;
-            return;
-        }
+        }, 100);
     } catch (error) {
         // console.log(error.message);
     }
