@@ -15,7 +15,7 @@
             <div class="side_bottom">
                 <el-collapse>
                     <el-collapse-item class="song_list" style="font-size: 18px;" title="创建的歌单">
-                        <div @click="toSongList(item.id)" class="songList_cell shenglue" :class="{
+                        <div @click="toSongList(item.id)" class="songList_cell shenglue" :title="item.name" :class="{
                             active: route.query?.songListInfoId
                                 == item?.id
                         }" v-for="item in createSongList" :key="item.id">
@@ -23,7 +23,7 @@
                         </div>
                     </el-collapse-item>
                     <el-collapse-item class="song_list" title="收藏的歌单">
-                        <div @click="toSongList(item.id)" class="songList_cell shenglue" :class="{
+                        <div @click="toSongList(item.id)" class="songList_cell shenglue" :title="item.name" :class="{
                             active: route.query?.songListInfoId
                                 == item?.id
                         }" v-for="item in collectSonglist" :key="item.id">

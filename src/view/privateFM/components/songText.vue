@@ -1,7 +1,7 @@
 <template>
     <div class="song-text" ref="songContainer">
         <div v-if="songText.length" class="song-text-item" :class="{ active: curIndex === ind + 1 }"
-            v-for="(item, ind) in songTextInfo[index]" :key="item.songText + item.time">
+            v-for="(item, ind) in songTextInfo[index as number]" :key="item.songText + item.time">
             {{ item.songText }}
         </div>
     </div>
@@ -13,7 +13,7 @@ import { cutSongText } from '../../../utils/cutSongText'
 
 const props = defineProps<{
     songText: any[],
-    index: number,
+    index?: number,
     audio: HTMLAudioElement
 }>()
 const songContainer = ref<HTMLDivElement>();
@@ -24,7 +24,7 @@ const positionY = computed(() => {
     return (curIndex.value * 40 - 120) < 0 ? 0 : (curIndex.value * 40 - 120);
 })
 const curIndex = computed(() => {
-    return songTextInfo[props.index]?.filter(item => {
+    return songTextInfo[props.index as number]?.filter(item => {
         return curTime.value > item.time
     }).length;
 })

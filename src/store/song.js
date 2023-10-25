@@ -16,13 +16,17 @@ export const song = defineStore('song', {
                 currentPlayingSong: {},
                 songUrl: '',
                 FMMode: false,   // 私人FM模式
-                FMList: []
+                FMList: [],
+                album: ''
             },
         }
     },
     getters: {
         getSongInfo() {
             return this.songInfo
+        },
+        currentPlayingSong() {
+            return this.songInfo.currentPlayingSong;
         }
     },
     actions: {}

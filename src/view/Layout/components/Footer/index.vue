@@ -2,28 +2,28 @@
     <div class="footer unselectable">
 
         <!-- 歌曲封面 -->
-        <div v-if="songState.picUrl" class="songImg">
+        <div v-if="songState.picUrl" class="songImg" @click="handleShowSongDisplay">
             <img :src="songState.picUrl + '?params=80y80'" alt="">
         </div>
         <!-- 歌曲封面 -->
 
         <!-- 歌曲名称 -->
         <div v-if="songState.name" class="songInfo">
-            <div class="songName shenglue">{{ songState.name }}</div>
-            <div class="songAr shenglue">{{ mulArShow(songState.ar) }}</div>
+            <div class="songName shenglue" :title="songState.name">{{ songState.name }}</div>
+            <div class="songAr shenglue" :title="mulArShow(songState.ar)">{{ mulArShow(songState.ar) }}</div>
         </div>
         <!-- 歌曲名称 -->
 
         <!-- 上一曲、暂停、下一曲 -->
         <div class="songOption">
-            <div v-if="!songInfo.FMList.length" class="beforeSong iconfont" @click="beforeSong">
+            <div v-if="!isFM" class="beforeSong iconfont" @click="beforeSong">
                 <p>&#xe63c;</p>
             </div>
             <div class="pause iconfont" @click="changePlayingState">
                 <span v-if="isPlaying">&#xe87a;</span>
                 <span v-else>&#xe87c;</span>
             </div>
-            <div v-if="!songInfo.FMList.length" class="nextSong iconfont" @click="SongEnd">
+            <div v-if="!isFM" class="nextSong iconfont" @click="SongEnd">
                 <p>&#xe63e;</p>
             </div>
         </div>
@@ -41,7 +41,7 @@
         <!-- 进度条、时间 -->
 
         <!-- 播放模式 -->
-        <div v-if="!songState.FMList.length" class="playMode" @click="changePlayMode">
+        <div v-if="!isFM" class="playMode" @click="changePlayMode">
             <div v-if="songState.playMode === 0" class="seqPlay iconfont">&#xea6f;</div>
             <div v-if="songState.playMode === 1" class="loopPlay iconfont">&#xe66c;</div>
             <div v-if="songState.playMode === 2" class="singlePlay iconfont">&#xe66d;</div>
@@ -58,14 +58,17 @@
         <div v-if="showSongList && !songState.FMMode" class="close" @click="showSongList = false">
             <songList v-if="showSongList"></songList>
         </div>
-        <div v-if="!songState.FMList.length" class="playList iconfont" @click="playListShow"><span
-                class="icon">&#xe62d;</span></div>
+        <div v-if="!isFM" class="playList iconfont" @click="playListShow"><span class="icon">&#xe62d;</span></div>
         <div v-else class="playList iconfont" @click="playListShow"><span class="icon"></span></div>
         <!-- 播放列表 -->
     </div>
+    <song-display :next-song="SongEnd" :play-it="changePlayingState" :audio-dom="audioDom"
+        :show="showSongDisplay"></song-display>
 </template>
 
 <script setup>
+// 歌曲展示
+import songDisplay from '../../../song/index.vue';
 // 歌曲列表组件
 import songList from './components/songList.vue'
 // 音量组件
@@ -90,6 +93,20 @@ import { song } from '@/store/song.js'
 import { storeToRefs } from 'pinia'
 const songStore = song()
 let { songInfo } = storeToRefs(songStore)
+const route = useRoute();
+let audioDom = ref();
+console.log(route.path);
+// 当前是否为FM模式
+const isFM = computed(() => {
+    return songInfo.value.FMList.length && route.path === '/privateFM'
+})
+
+// 是否展示歌曲展示
+const showSongDisplay = ref(false)
+const handleShowSongDisplay = () => {
+    console.log(showSongDisplay.value);
+    showSongDisplay.value = !showSongDisplay.value
+}
 
 // 播放状态 暂停/播放
 let isPlaying = ref(false)
@@ -122,6 +139,7 @@ let initAudio = async () => {
             // 创建audio
             const createAudio = () => {
                 const audio = document.createElement('audio')
+                audio.autoplay = false
                 audio.src = songInfo.value.songUrl
                 audio.volume = songInfo.value.volume / 100
                 audio.style = 'display:none;'
@@ -138,6 +156,7 @@ let initAudio = async () => {
                     songEndFn()
                     audio.onended = null
                 }
+                audioDom.value = audio;
             }
 
             // 判定歌曲url是否可用
@@ -156,7 +175,7 @@ let initAudio = async () => {
                     createAudio();
                 }
             }
-
+            audioDom.value.pause();
         }
     } catch (error) {
         // console.log(error);
@@ -281,7 +300,7 @@ const updateAudio = (newval) => {
     songState = songInfo.value
     playedTime.value = '00:00'
     playedProgress.value = 0
-    createAudio(newval)
+    audioDom.value = createAudio(newval);
     const audio = document.querySelector('audio')
     audio.addEventListener('play', () => {
         isPlaying.value = true
@@ -338,6 +357,7 @@ watch(() => songInfo.value, () => {
     .songImg {
         width: 90px;
         box-sizing: border-box;
+        cursor: pointer;
 
         img {
             border-radius: 10px;

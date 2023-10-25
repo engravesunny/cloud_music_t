@@ -18,6 +18,7 @@ const playSong = async (song) => {
     songInfo.value.picUrl = song?.al?.picUrl || song?.album?.picUrl
     songInfo.value.ar = song.ar || song.artists
     songInfo.value.playDuration = song?.dt || song.duration
+    songInfo.value.album = song?.al?.name
     // 搜索歌曲插入播放列表,id相同歌曲删除
     if (!songInfo.value.FMMode) {
         // 不是FM模式

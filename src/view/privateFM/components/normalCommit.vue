@@ -3,7 +3,8 @@
         <h3>
             <div class="title">精彩评论</div>
         </h3>
-        <commitCell :songId="FMInfo[index].id" v-for="item in highComments" :key="item.commentId" :comment="item">
+        <commitCell :songId="(FMInfo && index && FMInfo[index].id) || currentPlayingSong.id" v-for="item in highComments"
+            :key="item.commentId" :comment="item">
         </commitCell>
     </div>
 
@@ -12,7 +13,8 @@
             <div class="title" ref="newHead">最新评论</div>
         </h3>
         <div v-loading="!normalComments.length" style="width: 100%;min-height: 500px;">
-            <commitCell :songId="FMInfo[index].id" v-for="item in normalComments" :key="item.commentId" :comment="item">
+            <commitCell :songId="(FMInfo && index && FMInfo[index].id) || currentPlayingSong.id"
+                v-for="item in normalComments" :key="item.commentId" :comment="item">
             </commitCell>
         </div>
         <pageDivision @changePage="changePage" :pageSize="limit" :curPage="curPage" :total="total"></pageDivision>
@@ -24,11 +26,13 @@ import pageDivision from './pageDivision.vue'
 import commitCell from './commitCell.vue'
 import { getCommits, limit } from '../utils/getComments'
 import { eventBus } from '../../../utils/eventBus';
+import { song } from '../../../store/song';
+import { storeToRefs } from 'pinia'
+const { currentPlayingSong } = storeToRefs(song())
 
 const props = defineProps<{
-    FMInfo: any[],
-    index: number,
-    updateFlag: number
+    FMInfo?: any[],
+    index?: number
 }>()
 const emits = defineEmits(['updateTotal'])
 
@@ -41,7 +45,7 @@ const curPage = ref(0);
 
 // set commnets
 const setComments = async () => {
-    const info = await getCommits(props.FMInfo[props.index].id, curPage.value);
+    const info = await getCommits((props.FMInfo && props.index && props.FMInfo[props.index].id) || currentPlayingSong.value.id, curPage.value);
     normalComments.length = 0;
     highComments.length = 0;
     info?.norComs.forEach(item => {
@@ -53,10 +57,9 @@ const setComments = async () => {
     total.value = info?.ttl as number
     emits('updateTotal', info?.ttl)
 }
-
 const updateComments = async () => {
     normalComments.length = 0;
-    const info = await getCommits(props.FMInfo[props.index].id, curPage.value);
+    const info = await getCommits((props.FMInfo && props.index && props.FMInfo[props.index].id) || currentPlayingSong.value.id, curPage.value);
     info?.norComs.forEach(item => {
         normalComments.push(item);
     })
@@ -84,14 +87,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
     eventBus.$remove('updateComments', updateCommnets);
 })
+defineExpose({
+    setComments
+})
 watch(() => props.index, () => {
     setComments();
 }, {
     deep: true,
 })
-
-
-
 </script>
 
 <style lang="less" scoped>

@@ -28,9 +28,9 @@ const createAudio = (songUrl) => {
     let timer = null
     timer = setTimeout(() => {
         if (songUrl) {
-            if (songUrl === "http://m701.music.126.net/20230909151728/23bc2d69fb4eb09fbb5018caa356151a/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/28558899459/8ccf/a559/9a19/cac1201dbda66368389cce7573ad82a6.flac") return;
             ElMessage('正在缓冲，请耐心等待')
         }
+        timer = null;
     }, 3000);
     audio.oncanplaythrough = () => {
         try {
@@ -46,6 +46,7 @@ const createAudio = (songUrl) => {
             // console.log(error);
         }
     }
+    return audio;
 }
 
 export default createAudio;

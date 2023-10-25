@@ -1,6 +1,8 @@
 import request from "../utils/request";
-
-export const getSongText = (params: any) =>
+interface Params {
+  id: string | number;
+}
+export const getSongText = (params: Params) =>
   request({
     url: "/lyric",
     params,

@@ -25,14 +25,14 @@
                 <div class="suggest_title" v-if="suggestList.length || !suggestList.length && showSuggest && !searchText">
                     猜你想搜</div>
                 <ul v-if="suggestList.length && showSuggest && searchText">
-                    <li class="suggest_cell shenglue" v-for="item in suggestList" :key="item.id"
+                    <li class="suggest_cell shenglue" :title="item.name" v-for="item in suggestList" :key="item.id"
                         @click="$event => suggestSearch($event, item.name)">
                         {{ item.name }}{{ item.artists.length ? ' - ' : '' }}
                         <span v-for="artist in item.artists" :key="artist.id">{{ artist.name + ' ' }}</span>
                     </li>
                 </ul>
                 <ul v-if="!suggestList.length && showSuggest && !searchText">
-                    <li class="suggest_cell shenglue" v-for="item in hotSong" :key="item.first"
+                    <li class="suggest_cell shenglue" :title="item.first" v-for="item in hotSong" :key="item.first"
                         @click="$event => suggestSearch($event, item.first)">
                         {{ item.first }}
                     </li>

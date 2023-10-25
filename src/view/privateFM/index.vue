@@ -34,8 +34,10 @@
                             <h2>{{ FMInfo[index].name }}</h2>
                         </div>
                         <div class="other">
-                            <div class="ablum shenglue">专辑: {{ FMInfo[index].album.name }}</div>
-                            <div class="singer shenglue">歌手: {{ mulArShow(FMInfo[index].artists) }}</div>
+                            <div class="ablum shenglue" :title="FMInfo[index].album.name">专辑: {{ FMInfo[index].album.name }}
+                            </div>
+                            <div class="singer shenglue" :title="mulArShow(FMInfo[index].artists)">歌手: {{
+                                mulArShow(FMInfo[index].artists) }}</div>
                         </div>
                     </div>
                     <song-text :audio="audioDom" :index="index" :song-text="songTextInfo" />

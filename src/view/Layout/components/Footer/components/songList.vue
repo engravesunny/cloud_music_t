@@ -8,8 +8,9 @@
             <ul v-if="songList.songList.length">
                 <li v-for="(item, index) in songList.songList" :key="index" @click.stop="changePlayingSong(item)">
                     <div v-if="item.id === songList.currentPlayingSong.id" class="icon iconfont">&#xe62e;</div>
-                    <div class="name shenglue">{{ item.name }}</div>
-                    <div class="singer shenglue">{{ mulArShow(item.ar || item.artists) }}</div>
+                    <div class="name shenglue" :title="item.name">{{ item.name }}</div>
+                    <div class="singer shenglue" :title="mulArShow(item.ar || item.artists)">{{ mulArShow(item.ar ||
+                        item.artists) }}</div>
                     <div class="time">{{ formatTime(item.dt || item.duration) }}</div>
                     <div class="delete iconfont" @click.stop="deleteSongInList(item)">&#xe604;</div>
                 </li>
