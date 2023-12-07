@@ -46,7 +46,7 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:  
           username: 'root'   #ssh user name
-          server: '47.93.87.206' #引用之前创建好的secret
+          server: '124.221.213.24' #引用之前创建好的secret
           local_path: 'dist/index.html'  # 对应我们项目build的文件夹路径
           remote_path: '/serve/music_serve/public'
-          password: 'binyu1314..'
+          password: 'Binyu1314'
