@@ -192,11 +192,11 @@ onMounted(async () => {
 .login_box {
     border-radius: 10px;
     position: fixed;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
-    height: 500px;
+    height: 550px;
     display: flex;
     justify-content: center;
     background-color: var(--inner-body-color);
@@ -205,9 +205,8 @@ onMounted(async () => {
     .login_container {
         position: relative;
         width: 400px;
-        height: 500px;
+        height: 550px;
         display: flex;
-        flex-wrap: wrap;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;

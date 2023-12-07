@@ -124,6 +124,7 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
     let url = props.item.picUrl || props.item.coverImgUrl || props.item.img1v1Url
+    url = url.replace('http://', 'https://')
     url = url + "?param=250y250"
     task = sendRequest(url);
     listenImgDom();

@@ -14,12 +14,12 @@ export default defineConfig({
     port: 4000,
     open: true,
     proxy: {
-      '/api': {
+      '/song': {
         target: 'http://kecat.top:3000/',
         // target就是你要访问的目标地址，可以是基础地址，这样方便在这个网站的其他api口调用数据
         ws: true,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/song/, ''),
         // 要记得加rewrite这句
       },
     },
