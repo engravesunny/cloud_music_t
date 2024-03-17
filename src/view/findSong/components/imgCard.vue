@@ -72,7 +72,7 @@ const handleLoad = (flag: boolean) => {
             img.classList.add('animate_show')
             imgDom.value.appendChild(img)
         }, (reason: any) => {
-            // console.log(reason);
+            console.log(reason);
         })
     }
     return { toDelete: () => promiseControl.deleteTask(task) };

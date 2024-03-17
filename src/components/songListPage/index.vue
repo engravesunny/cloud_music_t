@@ -146,7 +146,6 @@ const load = async () => {
         clearTimeout(timer);
         timer = null;
         timer = setTimeout(async () => {
-            console.log(!props.albumSongList?.length, !route.query.album);
             if (!props.albumSongList?.length && !route.query.album) {
                 // 不是专辑页
                 if (finished.value) return
@@ -175,7 +174,7 @@ const load = async () => {
             }
         }, 100);
     } catch (error) {
-        // console.log(error.message);
+        console.log(error.message);
     }
 }
 
@@ -226,7 +225,7 @@ watch(() => props.songListInfo, async (val) => {
             isMounted.value = true
         }
     } catch (error) {
-        // console.log(error.message);
+        console.log(error.message);
     }
 }, {
     deep: true,

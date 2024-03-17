@@ -35,7 +35,7 @@ watch(route, async (val) => {
       })
       songListInfo.push(data.playlist)
     } catch (error) {
-      // console.log(error.message);
+      console.log(error.message);
     }
   }
 }, {

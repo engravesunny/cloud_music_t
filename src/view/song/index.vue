@@ -203,7 +203,7 @@ onBeforeMount(() => {
 
 watch(() => songInfo.value.currentPlayingSong, () => {
     getSongTextInfo();
-    commentComponent.value.setComments();
+    commentComponent.value&&commentComponent.value.setComments();
 }, {
     deep: true
 })

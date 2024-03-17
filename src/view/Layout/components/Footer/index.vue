@@ -95,7 +95,6 @@ const songStore = song()
 let { songInfo } = storeToRefs(songStore)
 const route = useRoute();
 let audioDom = ref();
-console.log(route.path);
 // 当前是否为FM模式
 const isFM = computed(() => {
     return songInfo.value.FMList.length && route.path === '/privateFM'
@@ -104,7 +103,6 @@ const isFM = computed(() => {
 // 是否展示歌曲展示
 const showSongDisplay = ref(false)
 const handleShowSongDisplay = () => {
-    console.log(showSongDisplay.value);
     showSongDisplay.value = !showSongDisplay.value
 }
 
@@ -178,7 +176,7 @@ let initAudio = async () => {
             audioDom.value.pause();
         }
     } catch (error) {
-        // console.log(error);
+        console.log(error);
     }
 }
 

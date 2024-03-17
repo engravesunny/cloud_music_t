@@ -10,7 +10,7 @@
                     </div>
 
                     <div class="left-img" fit="cover">
-                        <img class="opacity0" @load="handleLoad" :src="item.coverSrc + '?params=150y150'" />
+                        <img class="opacity0" alt="每日歌曲推荐" @load="handleLoad" :src="item.coverSrc + '?params=150y150'" />
                     </div>
                     <div class="right-info">
                         <h4>{{ item.name }}</h4>
@@ -149,7 +149,7 @@ const getCover = async () => {
             })
         }
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         if (error.response?.status === 301) {
             ElMessage.error('登录过期，请重新登录')
             eventBus.$emit('logout')
