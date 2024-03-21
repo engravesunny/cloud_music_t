@@ -89,10 +89,7 @@ import '@/assets/icon/iconfont/iconfont.css'
 // 引入多歌手分割工具
 import mulArShow from '../../../../utils/mulArShow';
 // 引入底部播放栏状态信息
-import { song } from '@/store/song.js'
-import { storeToRefs } from 'pinia'
-const songStore = song()
-let { songInfo } = storeToRefs(songStore)
+import { songInfo } from '../../../../utils/playSong';
 const route = useRoute();
 let audioDom = ref();
 // 当前是否为FM模式
@@ -229,13 +226,13 @@ let changeVolume = () => {
 // 展示播放列表
 let showSongList = ref(false)
 const playListShow = () => {
-    if (isChangingVolume) isChangingVolume.value = false
+    if (isChangingVolume.value) isChangingVolume.value = false
     showSongList.value = !showSongList.value
 }
 
 // 改变播放模式
 const changePlayMode = () => {
-    if (isChangingVolume) isChangingVolume.value = false
+    if (isChangingVolume.value) isChangingVolume.value = false
     songInfo.value.playMode++;
     if (songInfo.value.playMode === 4) {
         songInfo.value.playMode = 0
@@ -256,6 +253,7 @@ let timer = null
 const SongEnd = () => {
     if (timer) {
         clearTimeout(timer)
+        timer = null;
         ElMessage('请不要繁忙点击')
         timer = null
     }
@@ -323,6 +321,7 @@ watch(() => songInfo.value.songUrl, async (newval) => {
 })
 
 watch(() => songInfo.value, () => {
+    console.log('changed');
     localStorage.setItem('PLAYING_STATE', songInfo.value)
 })
 </script>
