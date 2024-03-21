@@ -40,6 +40,7 @@ const routes = [
           component: "findSong",
         },
         beforeEnter: async (_to, _from, next) => {
+          let userInfo = userStore.getUserInfo();
           if (!userInfo.cookie) {
             try {
               const { data: loginInfo } = await visitorLogin();
