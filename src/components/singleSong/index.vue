@@ -18,9 +18,11 @@
             <ul>
                 <li v-for="(item, index) in result" :key="item.id" @dblclick="dblclickSong(item)">
                     <div class="option">
-                        <div v-if="item.id === songState.currentPlayingSong.id" class="playingIcon iconfont">&#xe62e;</div>
+                        <div v-if="item.id === songState.currentPlayingSong.id" class="playingIcon iconfont">&#xe62e;
+                        </div>
                         <div v-else class="index">{{ (index + 1) < 10 ? '0' + (index + 1) : (index + 1) }}</div>
-                                <div @click="likeIt(item.id, false)" v-if="isLiked(item.id, userlikeIds)" class="iconfont">
+                                <div @click="likeIt(item.id, false)" v-if="isLiked(item.id, userlikeIds)"
+                                    class="iconfont">
                                     &#xe8c3;</div>
                                 <div @click="likeIt(item.id, true)" v-else class="iconfont">&#xe8ab;</div>
                         </div>
@@ -45,8 +47,8 @@
 
         <!-- 列表分页导航 -->
         <div v-if="songTotal" class="page">
-            <el-pagination :page-size="100" :pager-count="11" :current-page="currentPages + 1" layout="prev, pager, next"
-                :total="songTotal" @current-change="currentChange" />
+            <el-pagination :page-size="100" :pager-count="11" :current-page="currentPages + 1"
+                layout="prev, pager, next" :total="songTotal" @current-change="currentChange" />
         </div>
         <!-- 列表分页导航 -->
 
@@ -66,7 +68,6 @@ import 'element-plus/theme-chalk/el-message-box.css';
 import 'element-plus/theme-chalk/el-message.css';
 
 import '@/assets/icon/iconfont/iconfont.css'
-import { search, getSongUrl, checkSong } from '@/api/search'
 
 import formatTime from '@/utils/formatTime.js'
 
@@ -77,10 +78,9 @@ import mulArShows from '@/utils/mulArShow.js'
 import dblclickSong from '@/utils/playSong.js'
 
 // 引入底部播放栏状态信息
-import { song } from '@/store/song.js'
-import { storeToRefs } from 'pinia'
-const songStore = song()
-let { songInfo } = storeToRefs(songStore)
+import { songInfo } from '@/utils/playSong';
+
+import { storeToRefs } from 'pinia';
 
 // 用户相关信息
 const userStore = user()
@@ -91,24 +91,22 @@ const mulArShow = mulArShows
 
 let songState = songInfo.value
 
-watch(() => songInfo.value, (val) => {
+watch(() => songInfo.value, () => {
     songState = songInfo.value
 }, {
     deep: true,
     immediate: true
 })
 
-const route = useRoute()
 const router = useRouter()
 
 // 当前页码
 const currentPage = ref(0)
 
 // 接收父组件数据
-let props = defineProps(['result', 'songTotal', 'currentPages'])
+defineProps(['result', 'songTotal', 'currentPages'])
 const emit = defineEmits(['updatePage'])
 
-let results = computed(() => { return result })
 // 页码改变
 const currentChange = (page) => {
     currentPage.value = page
@@ -131,9 +129,13 @@ const getLikeIds = async () => {
 }
 // 用户点击喜欢
 const likeIt = async (id, like) => {
-    const res = await toLikeSong({
-        id, like
-    })
+    try {
+        await toLikeSong({
+            id, like
+        })
+    } catch (error) {
+        ElMessage.error(error.message)
+    }
     getLikeIds()
     router.go(0)
 }
