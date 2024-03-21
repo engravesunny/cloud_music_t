@@ -1,25 +1,37 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const user = defineStore('user', {
-    state: () => {
-        return {
-            userInfo: {
-                nickname: '',
-                cookie: localStorage.getItem('CLOUD_MUSIC') || '',
-                avatarUrl: '',
-                id: ''
-            }
-        }
+export const user = defineStore("user", {
+  state: () => {
+    return {
+      userInfo: {
+        nickname: "",
+        cookie: "",
+        avatarUrl: "",
+        id: "",
+        theme: "",
+      },
+    };
+  },
+  getters: {
+    getUserInfo() {
+      return this.userInfo;
     },
-    getters: {},
-    actions: {
-        reset() {
-            this.userInfo = {
-                nickname: '',
-                cookie: localStorage.getItem('CLOUD_MUSIC') || '',
-                avatarUrl: '',
-                id: ''
-            }
-        }
-    }
-})
+  },
+  actions: {
+    reset() {
+      this.userInfo = {
+        nickname: "",
+        cookie: localStorage.getItem("CLOUD_MUSIC") || "",
+        avatarUrl: "",
+        id: "",
+      };
+    },
+    init() {
+      this.userInfo = {
+        ...this.userInfo,
+        cookie: localStorage.getItem("CLOUD_MUSIC") || "",
+        theme: localStorage.getItem("THEME") || "",
+      };
+    },
+  },
+});

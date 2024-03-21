@@ -12,7 +12,6 @@
             </div>
             <div class="title">定制主题</div>
             <div class="container">Data is none</div>
-
         </div>
     </div>
 </template>
@@ -21,6 +20,7 @@
 import { changeTheme } from '../../../../../utils/changeTheme'
 const height = ref(0)
 const boxShadow = ref('none')
+const theme = ref('');
 
 const handleClick = () => {
     if (height.value) {
@@ -34,7 +34,23 @@ const handleClick = () => {
 
 const handleChangeTheme = (e) => {
     changeTheme(e.target.innerText);
+    theme.value = e.target.innerText;
 }
+
+onMounted(() => {
+    window.addEventListener('beforeunload', () => {
+        if (theme.value) {
+            localStorage.setItem('THEME', theme.value)
+        }
+    })
+})
+
+onBeforeUnmount(() => {
+    if (theme.value) {
+        localStorage.setItem('THEME', theme.value)
+    }
+})
+
 
 </script>
 
