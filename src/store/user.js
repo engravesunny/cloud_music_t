@@ -5,7 +5,7 @@ export const user = defineStore("user", {
     return {
       userInfo: {
         nickname: "",
-        cookie: "",
+        cookie: localStorage.getItem("CLOUD_MUSIC") || "",
         avatarUrl: "",
         id: "",
         theme: "",
@@ -29,7 +29,6 @@ export const user = defineStore("user", {
     init() {
       this.userInfo = {
         ...this.userInfo,
-        cookie: localStorage.getItem("CLOUD_MUSIC") || "",
         theme: localStorage.getItem("THEME") || "",
       };
     },
