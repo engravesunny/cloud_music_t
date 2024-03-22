@@ -2,11 +2,15 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    "vue/setup-compiler-macros": true,
   },
+  parser: "vue-eslint-parser",
   extends: [
     "eslint:recommended",
     "plugin:vue/vue3-essential",
     "./.eslintrc-auto-import.json",
+    "plugin:vue/vue3-recommended",
+    "prettier",
   ],
   overrides: [
     {
@@ -20,11 +24,13 @@ module.exports = {
     },
   ],
   parserOptions: {
-    ecmaVersion: "latest",
     sourceType: "module",
+    ecmaVersion: "latest",
+    parser: "@typescript-eslint/parser",
   },
-  plugins: ["vue"],
+  plugins: ["vue", "prettier"],
   rules: {
     "vue/multi-word-component-names": "off",
+    "prettier/prettier": "error",
   },
 };

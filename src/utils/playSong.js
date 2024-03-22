@@ -8,50 +8,57 @@ const songStore = song();
  */
 let songInfo = storeToRefs(songStore).songInfo;
 
-const playSong = async (song) => {
-  const isAvailable = await checkSong({
-    id: song.id,
-  });
-  if (!isAvailable.data.success) {
-    return ElMessage("暂无版权");
+const playSong = async (song, hasChecked = false) => {
+  if (!hasChecked) {
+    const isAvailable = await checkSong({
+      id: song.id,
+    });
+    if (!isAvailable.data.success) {
+      return ElMessage("暂无版权喵");
+    }
   }
+  let newSongInfo = { ...songInfo.value };
   // 信息赋值到状态
-  songInfo.value.name = song.name;
-  songInfo.value.picUrl = song?.al?.picUrl || song?.album?.picUrl;
-  songInfo.value.ar = song.ar || song.artists;
-  songInfo.value.playDuration = song?.dt || song.duration;
-  songInfo.value.album = song?.al?.name;
+  newSongInfo.name = song.name;
+  newSongInfo.picUrl = song?.al?.picUrl || song?.album?.picUrl;
+  newSongInfo.ar = song.ar || song.artists;
+  newSongInfo.playDuration = song?.dt || song.duration;
+  newSongInfo.album = song?.al?.name;
   // 搜索歌曲插入播放列表,id相同歌曲删除
-  if (!songInfo.value.FMMode) {
+  if (!newSongInfo.FMMode) {
     // 不是FM模式
-    songInfo.value.FMList = reactive([]);
-    if (songInfo.value.songList.length) {
-      if (!songInfo.value.songList.some((item) => item.id === song.id)) {
-        songInfo.value.songList.push(song);
+    newSongInfo.FMList = reactive([]);
+    if (newSongInfo.songList.length) {
+      if (!newSongInfo.songList.some((item) => item.id === song.id)) {
+        newSongInfo.songList.push(song);
       }
     } else {
-      songInfo.value.songList.push(song);
+      newSongInfo.songList.push(song);
     }
   } else {
     // FM模式
-    if (songInfo?.value?.FMList?.length) {
-      if (!songInfo.value.FMList.some((item) => item.id === song.id)) {
-        songInfo.value.FMList.push(song);
+    if (newSongInfo.FMList?.length) {
+      if (!newSongInfo.FMList.some((item) => item.id === song.id)) {
+        newSongInfo.FMList.push(song);
       }
     } else {
-      songInfo.value.FMList.push(song);
+      newSongInfo.FMList.push(song);
     }
   }
   // 切换当前播放歌曲
-  songInfo.value.currentPlayingSong = song;
+  newSongInfo.currentPlayingSong = song;
 
   // 获取歌曲url
   const { data } = await getSongUrl({
     id: song.id,
   });
-  songInfo.value.songUrl = data.data[0].url;
+  newSongInfo.songUrl = data.data[0].url;
+  // 更新状态
+  songStore.setSongInfo(newSongInfo);
+  songInfo.value = newSongInfo;
+  // console.log(songStore.currentPlayingSong);
   // 当前底部播放栏状态存入本地存储 使其持久化
-  localStorage.setItem("PLAYING_STATE", JSON.stringify(songInfo.value));
+  localStorage.setItem("PLAYING_STATE", JSON.stringify(newSongInfo));
 };
 
 export default playSong;

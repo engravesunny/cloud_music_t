@@ -11,7 +11,6 @@ import { getAlbumContent } from '../../api/album';
 import { getSongListDetail } from '@/api/songList';
 
 const route = useRoute()
-const router = useRouter()
 let songlistId = ref('')
 
 let songListInfo = reactive([])

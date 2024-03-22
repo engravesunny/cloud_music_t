@@ -1,72 +1,124 @@
 <template>
-    <el-scrollbar ref="scrollbar">
-        <div v-if="FMInfo.length" class="pricateFM_container unselectable">
-            <!-- 顶部歌曲内容 -->
-            <div class="top">
-                <!-- 左侧歌曲封面和操作按钮 -->
-                <div class="options_left">
-                    <div class="img">
-                        <el-image @load="opacity = 1" style="border-radius:10px;height: 100%;width: 100%;"
-                            :style="{ opacity }" fit="cover" :src="FMInfo[index].album.picUrl + '?params=100y100'"
-                            alt="img"></el-image>
-                        <div class="playbtn"></div>
-                    </div>
-                    <div class="btn">
-                        <button @click="likeIt(false)" v-if="isLiking" class="iconfont">
-                            <span>&#xe8c3;</span>
-                        </button>
-                        <button @click="likeIt(true)" v-else class="iconfont">
-                            <span>&#xe8ab;</span>
-                        </button>
-                        <button @click="playIt" class="iconfont">
-                            <span>&#xe87c;</span>
-                        </button>
-                        <button @click="nextFM" class="iconfont">
-                            <span>&#xe63e;</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- 左侧歌曲封面和操作按钮 -->
-                <!-- 右侧歌曲信息和歌词 -->
-                <div class="songInfo_right">
-                    <div class="songInfo">
-                        <div class="name">
-                            <h2>{{ FMInfo[index].name }}</h2>
-                        </div>
-                        <div class="other">
-                            <div class="ablum shenglue" :title="FMInfo[index].album.name">专辑: {{ FMInfo[index].album.name }}
-                            </div>
-                            <div class="singer shenglue" :title="mulArShow(FMInfo[index].artists)">歌手: {{
-                                mulArShow(FMInfo[index].artists) }}</div>
-                        </div>
-                    </div>
-                    <song-text :audio="audioDom" :index="index" :song-text="songTextInfo" />
-                </div>
-                <!-- 右侧歌曲信息和歌词 -->
-            </div>
-            <!-- 顶部歌曲内容 -->
-
-            <!-- 底部评论内容 -->
-            <div class="bottom">
-                <!-- 发送评论 -->
-                <div class="sendCommit_Box">
-                    <div class="title">评论<span class="ds">（已有{{ total }}条评论）</span></div>
-                    <div class="input_box">
-                        <div class="commentBtn" v-if="commentText" @click="handleSendComment">发送</div>
-                        <textarea v-model="commentText" placeholder="发一条评论吧" class="commentText" name="评论区"
-                            id="comment"></textarea>
-                    </div>
-                </div>
-                <!-- 发送评论 -->
-
-                <!-- 歌曲评论 -->
-                <normal-commit @update-total="updateTotal" :update-flag="updateFlag" :FMInfo="FMInfo"
-                    :index="index"></normal-commit>
-                <!-- 歌曲评论 -->
-            </div>
-            <!-- 底部评论内容 -->
+  <el-scrollbar ref="scrollbar">
+    <div
+      v-if="FMInfo.length"
+      class="pricateFM_container unselectable"
+    >
+      <!-- 顶部歌曲内容 -->
+      <div class="top">
+        <!-- 左侧歌曲封面和操作按钮 -->
+        <div class="options_left">
+          <div class="img">
+            <el-image
+              style="border-radius:10px;height: 100%;width: 100%;"
+              :style="{ opacity }"
+              fit="cover"
+              :src="FMInfo[index].album.picUrl + '?params=100y100'"
+              alt="img"
+              @load="opacity = 1"
+            />
+            <div class="playbtn" />
+          </div>
+          <div class="btn">
+            <button
+              v-if="isLiking"
+              class="iconfont"
+              @click="likeIt(false)"
+            >
+              <span>&#xe8c3;</span>
+            </button>
+            <button
+              v-else
+              class="iconfont"
+              @click="likeIt(true)"
+            >
+              <span>&#xe8ab;</span>
+            </button>
+            <button
+              class="iconfont"
+              @click="playIt"
+            >
+              <span>&#xe87c;</span>
+            </button>
+            <button
+              class="iconfont"
+              @click="nextFM"
+            >
+              <span>&#xe63e;</span>
+            </button>
+          </div>
         </div>
-    </el-scrollbar>
+        <!-- 左侧歌曲封面和操作按钮 -->
+        <!-- 右侧歌曲信息和歌词 -->
+        <div class="songInfo_right">
+          <div class="songInfo">
+            <div class="name">
+              <h2>{{ FMInfo[index].name }}</h2>
+            </div>
+            <div class="other">
+              <div
+                class="ablum shenglue"
+                :title="FMInfo[index].album.name"
+              >
+                专辑: {{ FMInfo[index].album.name }}
+              </div>
+              <div
+                class="singer shenglue"
+                :title="mulArShow(FMInfo[index].artists)"
+              >
+                歌手: {{
+                  mulArShow(FMInfo[index].artists) }}
+              </div>
+            </div>
+          </div>
+          <song-text
+            :audio="audioDom"
+            :index="index"
+            :song-text="songTextInfo"
+          />
+        </div>
+        <!-- 右侧歌曲信息和歌词 -->
+      </div>
+      <!-- 顶部歌曲内容 -->
+
+      <!-- 底部评论内容 -->
+      <div class="bottom">
+        <!-- 发送评论 -->
+        <div class="sendCommit_Box">
+          <div class="title">
+            评论<span class="ds">（已有{{ total }}条评论）</span>
+          </div>
+          <div class="input_box">
+            <div
+              v-if="commentText"
+              class="commentBtn"
+              @click="handleSendComment"
+            >
+              发送
+            </div>
+            <textarea
+              id="comment"
+              v-model="commentText"
+              placeholder="发一条评论吧"
+              class="commentText"
+              name="评论区"
+            />
+          </div>
+        </div>
+        <!-- 发送评论 -->
+
+        <!-- 歌曲评论 -->
+        <normal-commit
+          :update-flag="updateFlag"
+          :FMInfo="FMInfo"
+          :index="index"
+          @update-total="updateTotal"
+        />
+        <!-- 歌曲评论 -->
+      </div>
+      <!-- 底部评论内容 -->
+    </div>
+  </el-scrollbar>
 </template>
 
 <script setup>

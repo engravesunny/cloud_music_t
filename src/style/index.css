@@ -32,6 +32,15 @@ body {
   text-overflow: ellipsis;
 }
 
+.shenglue3 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 .el-slider__button.el-tooltip__trigger.el-tooltip__trigger {
   width: 10px;
   height: 10px;

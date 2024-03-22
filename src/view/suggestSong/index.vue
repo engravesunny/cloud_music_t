@@ -1,95 +1,105 @@
 <template>
-    <el-scrollbar>
-        <div class="suggestSong_container unselectable">
-            <div class="top">
-                <div class="suggest_img">
-                    <div class="img iconfont">&#xe685;</div>
-                    <div class="date">{{ date }}</div>
-                </div>
-                <div class="suggest_title">
-                    <h1>每日歌曲推荐</h1>
-                    <p>根据你的口味生成，每天6:00更新</p>
-                </div>
-            </div>
-            <div class="bottom">
-                <el-button @click="playAll(songList)" type="primary" round class="iconfont btn">&#xe87c; 播放全部</el-button>
-            </div>
+  <el-scrollbar>
+    <div class="suggestSong_container unselectable">
+      <div class="top">
+        <div class="suggest_img">
+          <div class="img iconfont">&#xe685;</div>
+          <div class="date">{{ date }}</div>
         </div>
-        &nbsp;
-        <!-- 歌曲列表 -->
-        <singleSong v-loading="!songList.length" :songTotal="0" :current-pages="0" :result="songList"></singleSong>
-        <!-- 歌曲列表 -->
-    </el-scrollbar>
+        <div class="suggest_title">
+          <h1>每日歌曲推荐</h1>
+          <p>根据你的口味生成，每天6:00更新</p>
+        </div>
+      </div>
+      <div class="bottom">
+        <el-button
+          type="primary"
+          round
+          class="iconfont btn"
+          @click="playAll(songList)"
+          >&#xe87c; 播放全部</el-button
+        >
+      </div>
+    </div>
+    &nbsp;
+    <!-- 歌曲列表 -->
+    <singleSong
+      v-loading="!songList.length"
+      :song-total="0"
+      :current-pages="0"
+      :result="songList"
+    ></singleSong>
+    <!-- 歌曲列表 -->
+  </el-scrollbar>
 </template>
 
 <script setup>
-import playAll from '@/utils/playAll';
-import { getDailySongs } from '@/api/myFavourite'
+import playAll from "@/utils/playAll";
+import { getDailySongs } from "@/api/myFavourite";
 
-const dateStr = new Date()
-const date = dateStr.getDate().toString().padStart(2, '0');
-let songList = reactive([])
+const dateStr = new Date();
+const date = dateStr.getDate().toString().padStart(2, "0");
+let songList = reactive([]);
 onMounted(async () => {
-    const { data } = await getDailySongs()
-    data.data.dailySongs.forEach(item => {
-        songList.push(item)
-    });
-})
-
+  const { data } = await getDailySongs();
+  data.data.dailySongs.forEach((item) => {
+    songList.push(item);
+  });
+});
 </script>
 
 <style lang="less" scoped>
 .suggestSong_container {
-    width: 100%;
-    height: 300px;
-    // background-color: pink;
+  width: 100%;
+  height: 300px;
+  // background-color: pink;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  .top {
     display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    height: 200px;
+    justify-content: flex-start;
+    align-items: center;
 
-    .top {
-        display: flex;
-        height: 200px;
-        justify-content: flex-start;
-        align-items: center;
+    .suggest_img {
+      padding: 50px 20px 50px 50px;
+      width: 100px;
+      height: 100px;
+      position: relative;
 
-        .suggest_img {
-            padding: 50px 20px 50px 50px;
-            width: 100px;
-            height: 100px;
-            position: relative;
+      .img {
+        font-size: 100px;
+        color: var(--click-enable-color);
+      }
 
-            .img {
-                font-size: 100px;
-                color: var(--click-enable-color);
-            }
-
-            .date {
-                position: absolute;
-                top: 87px;
-                left: 76px;
-                font-size: 40px;
-                color: var(--click-enable-color);
-            }
-        }
-
-        .suggest_title {
-            p {
-                margin-top: 5px;
-                font-size: 14px;
-                font-weight: 100;
-            }
-        }
+      .date {
+        position: absolute;
+        top: 87px;
+        left: 76px;
+        font-size: 40px;
+        color: var(--click-enable-color);
+      }
     }
 
-    .bottom {
-        margin-left: 55px;
-
-        .btn {
-            background-color: var(--suggest-bg-color);
-            color: var(--click-enable-color);
-            border-color: var(--click-enable-color);
-        }
+    .suggest_title {
+      p {
+        margin-top: 5px;
+        font-size: 14px;
+        font-weight: 100;
+      }
     }
+  }
+
+  .bottom {
+    margin-left: 55px;
+
+    .btn {
+      background-color: var(--suggest-bg-color);
+      color: var(--click-enable-color);
+      border-color: var(--click-enable-color);
+    }
+  }
 }
 </style>
