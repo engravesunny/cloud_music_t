@@ -163,7 +163,7 @@ let initAudio = async () => {
       const createAudio = () => {
         const audio = document.createElement("audio");
         audio.autoplay = false;
-        audio.src = songInfo.value.songUrl;
+        audio.src = http2Https(songInfo.value.songUrl);
         audio.volume = songInfo.value.volume / 100;
         audio.style = "display:none;";
         document.body.appendChild(audio);

@@ -11,7 +11,7 @@
                 style="border-radius: 10px; height: 100%; width: 100%"
                 :style="{ opacity }"
                 fit="cover"
-                :src="songInfo.picUrl + '?params=100y100'"
+                :src="http2Https(songInfo.picUrl + '?params=100y100')"
                 alt="歌曲封面"
                 @load="opacity = 1"
               />
@@ -113,6 +113,7 @@ import { getSongText } from "../../api/song";
 import { sendComment } from "../../api/songList";
 import { eventBus } from "../../utils/eventBus";
 import { songInfo } from "@/utils/playSong";
+import { http2Https } from "@/utils/http2Https";
 
 // 滚动条
 const scrollbar = ref();
@@ -237,7 +238,7 @@ watch(
   },
   {
     deep: true,
-  },
+  }
 );
 
 watch(
@@ -250,7 +251,7 @@ watch(
   },
   {
     deep: true,
-  },
+  }
 );
 </script>
 
