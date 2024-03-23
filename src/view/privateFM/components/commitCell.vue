@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { http2Https } from "@/utils/http2Https.js";
+import { http2Https } from "@/utils/http2Https";
 import { toGoodComment } from "../../../api/songList.js";
 
 const props = defineProps(["comment", "songId"]);
