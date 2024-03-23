@@ -1,6 +1,7 @@
 import { checkSong, getSongUrl } from "@/api/search";
 import { song } from "@/store/song.js";
 import { storeToRefs } from "pinia";
+import { http2Https } from "./http2Https";
 
 const songStore = song();
 /**
@@ -52,7 +53,7 @@ const playSong = async (song, hasChecked = false) => {
   const { data } = await getSongUrl({
     id: song.id,
   });
-  newSongInfo.songUrl = data.data[0].url;
+  newSongInfo.songUrl = http2Https(data.data[0].url);
   // 更新状态
   songStore.setSongInfo(newSongInfo);
   songInfo.value = newSongInfo;

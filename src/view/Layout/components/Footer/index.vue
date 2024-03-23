@@ -2,7 +2,7 @@
   <div class="footer unselectable">
     <!-- 歌曲封面 -->
     <div v-if="songState.picUrl" class="songImg" @click="handleShowSongDisplay">
-      <img :src="songState.picUrl + '?params=80y80'" alt="" />
+      <img :src="http2Https(songState.picUrl + '?params=80y80')" alt="" />
     </div>
     <!-- 歌曲封面 -->
 
@@ -117,6 +117,7 @@ import "@/assets/icon/iconfont/iconfont.css";
 import mulArShow from "../../../../utils/mulArShow";
 // 引入底部播放栏状态信息
 import { songInfo } from "../../../../utils/playSong";
+import { http2Https } from "@/utils/http2Https";
 const route = useRoute();
 let audioDom = ref();
 // 当前是否为FM模式

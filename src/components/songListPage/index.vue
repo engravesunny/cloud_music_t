@@ -7,10 +7,13 @@
         <img
           :style="{ opacity }"
           :src="
-            (songList_info[0].coverImgUrl || songList_info[0].picUrl) +
-            '?params=500y500'
+            http2Https(
+              (songList_info[0].coverImgUrl || songList_info[0].picUrl) +
+                '?params=500y500',
+            )
           "
-          alt=""
+          alt="songList_info[0].coverImgUrl || songList_info[0].picUrl) +
+                '?params=500y500'"
           @load="handleLoaded"
         />
       </div>
@@ -30,8 +33,10 @@
           <div class="createAvatar">
             <img
               :src="
-                (songList_info[0]?.creator?.avatarUrl ||
-                  songList_info[0]?.artist?.img1v1Url) + '?params=100y100'
+                http2Https(
+                  (songList_info[0]?.creator?.avatarUrl ||
+                    songList_info[0]?.artist?.img1v1Url) + '?params=100y100',
+                )
               "
               alt="creator"
             />
@@ -108,6 +113,7 @@ import formatDate from "@/utils/formatDate.js";
 import singleSong from "../singleSong/index.vue";
 import { getSongListAllSong } from "@/api/songList.js";
 import { onMounted } from "vue";
+import { http2Https } from "@/utils/http2Https";
 
 const route = useRoute();
 
