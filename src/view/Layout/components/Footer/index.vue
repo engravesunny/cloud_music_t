@@ -349,7 +349,7 @@ watch(
   {
     deep: true,
     immediate: false,
-  },
+  }
 );
 </script>
 
@@ -376,15 +376,16 @@ watch(
   bottom: 0;
   left: 0;
   z-index: 999999;
+  box-sizing: border-box;
+  padding: 0 20px;
 
   .songImg {
-    width: 90px;
+    width: 70px;
     box-sizing: border-box;
     cursor: pointer;
 
     img {
       border-radius: 10px;
-      margin-left: 20px;
       width: 50px;
     }
   }
